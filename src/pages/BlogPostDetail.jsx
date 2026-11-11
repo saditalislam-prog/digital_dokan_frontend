@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, Clock, ArrowLeft, Tag, Share2, ArrowRight } from 'lucide-react';
 import API from '../api/axios';
+import { mockBlogPosts } from '../data/mockData';
 
 export default function BlogPostDetail() {
   const { slug } = useParams();
@@ -15,12 +16,21 @@ export default function BlogPostDetail() {
 
     API.get(`/blog/${slug}/`)
       .then((res) => {
-        setPost(res.data);
+        if (res.data && res.data.title) {
+          setPost(res.data);
+        } else {
+          loadFallback();
+        }
       })
-      .catch((err) => {
-        console.error('Error fetching blog detail:', err);
+      .catch(() => {
+        loadFallback();
       })
       .finally(() => setLoading(false));
+
+    function loadFallback() {
+      const found = mockBlogPosts.find((p) => p.slug === slug);
+      if (found) setPost(found);
+    }
 
     // Fetch related/recent articles
     API.get('/blog/')
@@ -28,7 +38,9 @@ export default function BlogPostDetail() {
         const items = res.data.results || res.data || [];
         setRecentPosts(items.filter((p) => p.slug !== slug).slice(0, 3));
       })
-      .catch(console.error);
+      .catch(() => {
+        setRecentPosts(mockBlogPosts.filter((p) => p.slug !== slug).slice(0, 3));
+      });
   }, [slug]);
 
   if (loading) {

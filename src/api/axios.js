@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+// When deployed together in a monorepo, '/api' is used directly.
+// When deployed separately, VITE_API_BASE_URL can point to the backend domain.
+const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+
 const API = axios.create({
-  baseURL: '/api',
+  baseURL,
 });
 
 API.interceptors.request.use((config) => {

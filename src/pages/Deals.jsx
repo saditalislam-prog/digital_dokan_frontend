@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Tag, Sparkles } from 'lucide-react';
 import API from '../api/axios';
 import ProductCard from '../components/ProductCard';
+import { mockProducts } from '../data/mockData';
 
 export default function Deals() {
   const [deals, setDeals] = useState([]);
@@ -11,18 +12,26 @@ export default function Deals() {
     setLoading(true);
     API.get('/products/?deal=true')
       .then((res) => {
-        // If no products flagged as deal, fallback to all products that have old_price
-        if (res.data && res.data.length > 0) {
-          setDeals(res.data);
+        const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        if (list.length > 0) {
+          setDeals(list);
         } else {
-          API.get('/products/').then((allRes) => {
-            const withDiscount = allRes.data.filter((p) => p.old_price && parseFloat(p.old_price) > parseFloat(p.price));
-            setDeals(withDiscount.length > 0 ? withDiscount : allRes.data.slice(0, 8));
-          });
+          API.get('/products/')
+            .then((allRes) => {
+              const allList = Array.isArray(allRes.data) ? allRes.data : (allRes.data?.results || []);
+              const withDiscount = allList.filter((p) => p.old_price && parseFloat(p.old_price) > parseFloat(p.price));
+              setDeals(withDiscount.length > 0 ? withDiscount : allList.slice(0, 8));
+            })
+            .catch(() => loadFallback());
         }
       })
-      .catch(console.error)
+      .catch(() => loadFallback())
       .finally(() => setLoading(false));
+
+    function loadFallback() {
+      const dealProducts = mockProducts.filter((p) => p.is_deal || (p.old_price && Number(p.old_price) > Number(p.price)));
+      setDeals(dealProducts.length > 0 ? dealProducts : mockProducts.slice(0, 8));
+    }
   }, []);
 
   return (

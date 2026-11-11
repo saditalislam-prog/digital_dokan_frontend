@@ -8,7 +8,7 @@ import SearchModal from './SearchModal';
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Shop', path: '/shop' },
-  { name: 'Brands', path: '/brand/all' },
+  { name: 'Brands', path: '/brands' },
   { name: 'Accessories', path: '/category/accessories' },
   { name: 'Deals', path: '/deals' },
   { name: 'About', path: '/about' },
@@ -58,7 +58,7 @@ export default function Navbar() {
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center gap-7">
               {navLinks.map(link => {
-                const isActive = location.pathname === link.path;
+                const isActive = location.pathname === link.path || (link.path === '/brands' && location.pathname.startsWith('/brand'));
                 return (
                   <Link
                     key={link.path}
@@ -137,19 +137,22 @@ export default function Navbar() {
           mobileOpen ? 'max-h-96 border-t border-white/10' : 'max-h-0'
         }`}>
           <div className="px-4 py-4 space-y-2 bg-primary-dark">
-            {navLinks.map(link => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  location.pathname === link.path
-                    ? 'bg-accent/20 text-accent'
-                    : 'text-gray-300 hover:bg-white/5 hover:text-white'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map(link => {
+              const isActive = location.pathname === link.path || (link.path === '/brands' && location.pathname.startsWith('/brand'));
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-accent/20 text-accent font-bold'
+                      : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
             {user ? (
               <>
                 <Link

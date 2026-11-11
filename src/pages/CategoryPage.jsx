@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import API from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import { ChevronRight } from 'lucide-react';
+import { mockProducts, mockCategories } from '../data/mockData';
 
 export default function CategoryPage() {
   const { slug } = useParams();
@@ -14,15 +15,26 @@ export default function CategoryPage() {
     setLoading(true);
     API.get(`/products/?category=${slug}`)
       .then((res) => {
-        setProducts(res.data);
-        if (res.data.length > 0 && res.data[0].category) {
-          setCategoryName(res.data[0].category.name);
+        const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        if (list.length > 0) {
+          setProducts(list);
+          if (list[0].category) {
+            setCategoryName(list[0].category.name);
+          }
         } else {
-          // Format slug as fallback
-          setCategoryName(slug.charAt(0).toUpperCase() + slug.slice(1));
+          const fallback = mockProducts.filter((p) => p.category?.slug === slug);
+          setProducts(fallback);
+          const foundCat = mockCategories.find((c) => c.slug === slug);
+          setCategoryName(foundCat ? foundCat.name : slug.charAt(0).toUpperCase() + slug.slice(1));
         }
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.warn('Category fetch error, using fallback:', err);
+        const fallback = mockProducts.filter((p) => p.category?.slug === slug);
+        setProducts(fallback);
+        const foundCat = mockCategories.find((c) => c.slug === slug);
+        setCategoryName(foundCat ? foundCat.name : slug.charAt(0).toUpperCase() + slug.slice(1));
+      })
       .finally(() => setLoading(false));
   }, [slug]);
 

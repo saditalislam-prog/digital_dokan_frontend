@@ -5,6 +5,7 @@ import API from '../api/axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
+import { mockProducts } from '../data/mockData';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -28,17 +29,39 @@ export default function ProductDetail() {
     setLoading(true);
     API.get(`/products/${slug}/`)
       .then((res) => {
-        setProduct(res.data);
-        setActiveImage(res.data.image);
-        // Fetch related products in same category
-        if (res.data.category?.slug) {
-          API.get(`/products/?category=${res.data.category.slug}`)
-            .then((r) => setRelatedProducts(r.data.filter((p) => p.id !== res.data.id).slice(0, 4)))
-            .catch(console.error);
+        if (res.data && res.data.id) {
+          setProduct(res.data);
+          setActiveImage(res.data.image);
+          if (res.data.category?.slug) {
+            API.get(`/products/?category=${res.data.category.slug}`)
+              .then((r) => {
+                const list = Array.isArray(r.data) ? r.data : (r.data?.results || []);
+                setRelatedProducts(list.filter((p) => p.id !== res.data.id).slice(0, 4));
+              })
+              .catch(() => {
+                const related = mockProducts.filter((p) => p.category?.slug === res.data.category?.slug && p.id !== res.data.id);
+                setRelatedProducts(related.slice(0, 4));
+              });
+          }
+        } else {
+          loadFallback();
         }
       })
-      .catch((err) => console.error('Failed to load product detail:', err))
+      .catch((err) => {
+        console.warn('Failed to load product detail from backend, using fallback:', err);
+        loadFallback();
+      })
       .finally(() => setLoading(false));
+
+    function loadFallback() {
+      const found = mockProducts.find((p) => p.slug === slug);
+      if (found) {
+        setProduct(found);
+        setActiveImage(found.image);
+        const related = mockProducts.filter((p) => p.category?.slug === found.category?.slug && p.id !== found.id);
+        setRelatedProducts(related.slice(0, 4));
+      }
+    }
   }, [slug]);
 
   const handleAddToCart = () => {

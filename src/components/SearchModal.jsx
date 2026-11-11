@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, X, Loader2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import API from '../api/axios';
+import { mockProducts } from '../data/mockData';
 
 export default function SearchModal({ isOpen, onClose }) {
   const [query, setQuery] = useState('');
@@ -32,11 +33,28 @@ export default function SearchModal({ isOpen, onClose }) {
       setLoading(true);
       try {
         const res = await API.get(`/products/?search=${encodeURIComponent(query)}`);
-        setResults(res.data.slice(0, 6));
+        const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        if (list.length > 0) {
+          setResults(list.slice(0, 6));
+        } else {
+          searchFallback();
+        }
       } catch (err) {
-        console.error('Search error:', err);
+        console.warn('Search API error, using fallback:', err);
+        searchFallback();
       } finally {
         setLoading(false);
+      }
+
+      function searchFallback() {
+        const q = query.toLowerCase().trim();
+        const matches = mockProducts.filter(
+          (p) =>
+            p.name?.toLowerCase().includes(q) ||
+            p.description?.toLowerCase().includes(q) ||
+            p.category?.name?.toLowerCase().includes(q)
+        );
+        setResults(matches.slice(0, 6));
       }
     }, 300);
 

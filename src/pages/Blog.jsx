@@ -2,63 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, ArrowRight, Sparkles } from 'lucide-react';
 import API from '../api/axios';
+import { mockBlogPosts } from '../data/mockData';
 
-const fallbackPosts = [
-  {
-    id: 1,
-    title: 'iPhone 16 vs Samsung Galaxy S24: Complete Comparison',
-    slug: 'iphone-16-vs-samsung-galaxy-s24-complete-comparison',
-    category: 'Review',
-    created_at: '2024-10-20',
-    image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'A detailed head-to-head comparison of the two most popular flagship smartphones of 2024 and 2025.'
-  },
-  {
-    id: 2,
-    title: 'Must Have Accessories for Your Phone',
-    slug: 'must-have-accessories-for-your-phone',
-    category: 'Guide',
-    created_at: '2024-10-18',
-    image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'Enhance your smartphone experience with these essential accessories that every phone owner should consider.'
-  },
-  {
-    id: 3,
-    title: 'Top 5 Upcoming Smartphones in 2025',
-    slug: 'top-5-upcoming-smartphones-in-2025',
-    category: 'Tech News',
-    created_at: '2024-10-15',
-    image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'Get ready for these exciting smartphone launches in 2025. From foldables to AI-powered devices.'
-  },
-  {
-    id: 4,
-    title: 'How to Choose the Right Smartphone for Your Needs in 2024',
-    slug: 'how-to-choose-the-right-smartphone-for-your-needs-in-2024',
-    category: 'Tips',
-    created_at: '2024-10-12',
-    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'A comprehensive buyer guide helping you balance processor power, camera versatility, and battery longevity.'
-  },
-  {
-    id: 5,
-    title: 'The Rise of Foldable Phones: Is 2025 the Right Time to Buy?',
-    slug: 'the-rise-of-foldable-phones-2025',
-    category: 'Tech News',
-    created_at: '2024-10-10',
-    image: 'https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'Foldable and flip devices are maturing with zero gap hinges, water resistance, and crease-free displays. Here is what you need to know.'
-  },
-  {
-    id: 6,
-    title: 'Top Battery Optimization Tips to Extend Smartphone Lifespan',
-    slug: 'battery-optimization-tips-smartphone-lifespan',
-    category: 'Tips',
-    created_at: '2024-10-05',
-    image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'Simple battery health habits to keep your lithium-ion battery healthy for over 3 to 4 years without degradation.'
-  }
-];
+const fallbackPosts = mockBlogPosts;
 
 export default function Blog() {
   const [posts, setPosts] = useState(fallbackPosts);

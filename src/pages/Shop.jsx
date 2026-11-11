@@ -3,12 +3,13 @@ import { useSearchParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal, X, Search, RotateCcw } from 'lucide-react';
 import API from '../api/axios';
 import ProductCard from '../components/ProductCard';
+import { mockProducts, mockCategories, mockBrands } from '../data/mockData';
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
+  const [products, setProducts] = useState(mockProducts);
+  const [categories, setCategories] = useState(mockCategories);
+  const [brands, setBrands] = useState(mockBrands);
   const [loading, setLoading] = useState(true);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
@@ -20,10 +21,61 @@ export default function Shop() {
   const [minPrice, setMinPrice] = useState(searchParams.get('min_price') || '');
   const [maxPrice, setMaxPrice] = useState(searchParams.get('max_price') || '');
 
+  // Helper to filter mock products when API is unreachable
+  const filterMockProducts = () => {
+    let list = [...mockProducts];
+    if (selectedCategory) {
+      list = list.filter((p) => p.category?.slug === selectedCategory);
+    }
+    if (selectedBrand) {
+      list = list.filter((p) => p.brand?.slug === selectedBrand);
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(
+        (p) =>
+          p.name?.toLowerCase().includes(q) ||
+          p.description?.toLowerCase().includes(q)
+      );
+    }
+    if (minPrice) {
+      list = list.filter((p) => Number(p.price) >= Number(minPrice));
+    }
+    if (maxPrice) {
+      list = list.filter((p) => Number(p.price) <= Number(maxPrice));
+    }
+
+    if (sortBy === 'price_low') {
+      list.sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (sortBy === 'price_high') {
+      list.sort((a, b) => Number(b.price) - Number(a.price));
+    } else if (sortBy === 'rating') {
+      list.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
+    } else if (sortBy === 'newest') {
+      list.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    }
+    return list;
+  };
+
   // Fetch categories and brands for filter sidebar
   useEffect(() => {
-    API.get('/categories/').then((res) => setCategories(res.data)).catch(console.error);
-    API.get('/brands/').then((res) => setBrands(res.data)).catch(console.error);
+    API.get('/categories/')
+      .then((res) => {
+        const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        if (list.length > 0) setCategories(list);
+      })
+      .catch((err) => {
+        console.warn('Backend categories unreachable, using fallback:', err);
+      });
+
+    API.get('/brands/')
+      .then((res) => {
+        const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        if (list.length > 0) setBrands(list);
+      })
+      .catch((err) => {
+        console.warn('Backend brands unreachable, using fallback:', err);
+      });
   }, []);
 
   // Sync state when URL params change
@@ -48,8 +100,19 @@ export default function Shop() {
     if (maxPrice) params.append('max_price', maxPrice);
 
     API.get(`/products/?${params.toString()}`)
-      .then((res) => setProducts(res.data))
-      .catch((err) => console.error('Fetch products error:', err))
+      .then((res) => {
+        const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        const hasFilters = selectedCategory || selectedBrand || searchQuery || minPrice || maxPrice;
+        if (list.length > 0 || hasFilters) {
+          setProducts(list);
+        } else {
+          setProducts(mockProducts);
+        }
+      })
+      .catch((err) => {
+        console.warn('Backend products unreachable, using filtered mock data:', err);
+        setProducts(filterMockProducts());
+      })
       .finally(() => setLoading(false));
   }, [selectedCategory, selectedBrand, searchQuery, sortBy, minPrice, maxPrice]);
 
