@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, CheckCircle2, Truck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,6 +15,7 @@ export default function Cart() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState('');
 
   const handleApplyPromo = (e) => {
     e.preventDefault();
@@ -35,6 +36,74 @@ export default function Cart() {
       alert('Please fill out delivery address and phone number!');
       return;
     }
+
+    const genId = `DD-${Math.floor(10000 + Math.random() * 90000)}`;
+    setPlacedOrderId(genId);
+
+    const newOrder = {
+      id: genId,
+      trackingId: genId,
+      customerName,
+      customerPhone,
+      customerAddress,
+      status: 'confirmed',
+      statusStep: 1,
+      paymentMethod: 'Cash on Delivery',
+      orderDate:
+        new Date().toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }) +
+        ', ' +
+        new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      estimatedDelivery: 'In 2-3 business days',
+      courier: 'Steadfast Courier',
+      courierTrackingCode: `ST-${Math.floor(100000 + Math.random() * 900000)}`,
+      subtotal: cartTotal,
+      discount: discountAmount,
+      shippingFee: 0,
+      total: finalTotal,
+      items: cartItems.map((item) => ({
+        id: item.product?.id || item.id,
+        name: item.product?.name || item.name,
+        slug: item.product?.slug || item.slug || '',
+        price: parseFloat(item.product?.price || item.price || 0),
+        quantity: item.quantity || 1,
+        image: item.product?.image || item.image || '',
+      })),
+      timeline: [
+        {
+          title: 'Order Confirmed',
+          date: 'Just now',
+          description: `Order ${genId} registered successfully via Cash on Delivery. Verification team will review.`,
+          completed: true,
+          current: true,
+        },
+        {
+          title: 'Packaging & Quality Check',
+          date: 'Upcoming',
+          description: 'Package will be inspected and packed with protective cushioning.',
+          completed: false,
+          current: false,
+        },
+        {
+          title: 'Dispatched to Courier',
+          date: 'Upcoming',
+          description: 'Handover to Steadfast Courier for regional transport.',
+          completed: false,
+          current: false,
+        },
+      ],
+    };
+
+    try {
+      const existingOrders = JSON.parse(localStorage.getItem('digital_dokan_orders') || '[]');
+      localStorage.setItem('digital_dokan_orders', JSON.stringify([newOrder, ...existingOrders]));
+    } catch (err) {
+      console.warn('Failed to save order to localStorage', err);
+    }
+
     setOrderPlaced(true);
     setTimeout(() => {
       clearCart();
@@ -252,15 +321,37 @@ export default function Cart() {
                   <span className="font-bold text-accent">${finalTotal.toFixed(2)}</span> has been placed.
                   Our representative will contact you at <strong>{customerPhone}</strong> for delivery verification.
                 </p>
-                <div className="pt-4">
+
+                {/* Tracking ID Highlight */}
+                {placedOrderId && (
+                  <div className="bg-surface p-4 rounded-2xl border border-gray-100 text-center space-y-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                      Your Order Tracking ID
+                    </span>
+                    <div className="text-2xl font-black text-accent tracking-wider font-mono">
+                      {placedOrderId}
+                    </div>
+                    <p className="text-[11px] text-gray-500">
+                      Keep this ID to check real-time courier and delivery status.
+                    </p>
+                  </div>
+                )}
+
+                <div className="pt-2 space-y-2">
+                  <Link
+                    to={`/track-order?id=${placedOrderId}`}
+                    className="w-full py-3.5 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-accent/25 transition-all"
+                  >
+                    <Truck className="w-4 h-4" /> Track Your Order Now
+                  </Link>
                   <button
                     onClick={() => {
                       setOrderModalOpen(false);
                       setOrderPlaced(false);
                     }}
-                    className="w-full py-3 bg-accent text-white font-bold rounded-xl"
+                    className="w-full py-2.5 bg-surface hover:bg-gray-100 text-gray-600 font-semibold rounded-xl text-xs transition-colors"
                   >
-                    Back to Home
+                    Continue Shopping
                   </button>
                 </div>
               </div>

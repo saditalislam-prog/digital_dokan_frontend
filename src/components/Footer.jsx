@@ -13,10 +13,10 @@ const quickLinks = [
 
 const customerService = [
   { name: 'Contact Us', path: '/about' },
+  { name: 'Track Order', path: '/track-order' },
   { name: 'Shipping Policy', path: '/about' },
   { name: 'Return Policy', path: '/about' },
   { name: 'FAQs', path: '/about' },
-  { name: 'Track Order', path: '/about' },
 ];
 
 const socialLinks = [

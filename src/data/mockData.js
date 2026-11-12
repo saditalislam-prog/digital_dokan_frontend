@@ -1139,3 +1139,202 @@ export const mockBlogPosts = [
     "created_at": "2026-10-20 18:47:22.626781"
   }
 ];
+
+export const sampleOrders = [
+  {
+    id: 'DD-10294',
+    trackingId: 'DD-10294',
+    customerName: 'Sadit Al Islam',
+    customerPhone: '+880 1711-234567',
+    customerAddress: 'House 42, Road 11, Block D, Banani, Dhaka 1213',
+    status: 'out_for_delivery',
+    statusStep: 4, // 1: Confirmed, 2: Processing, 3: Dispatched, 4: Out for Delivery, 5: Delivered
+    paymentMethod: 'Cash on Delivery',
+    paymentStatus: 'Pending Payment on Arrival',
+    orderDate: 'Nov 11, 2026, 11:30 AM',
+    estimatedDelivery: 'Today, by 6:00 PM',
+    courier: 'Steadfast Courier',
+    courierTrackingCode: 'ST-849102',
+    courierRider: 'Md. Sohel Rana (+880 1822-998877)',
+    subtotal: 1998.00,
+    discount: 100.00,
+    shippingFee: 0.00,
+    total: 1898.00,
+    items: [
+      {
+        id: 1,
+        name: 'iPhone 16 Pro Max',
+        slug: 'iphone-16-pro-max',
+        price: 1199.00,
+        quantity: 1,
+        image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80',
+      },
+      {
+        id: 13,
+        name: 'Apple Watch Ultra 2',
+        slug: 'apple-watch-ultra-2',
+        price: 799.00,
+        quantity: 1,
+        image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80',
+      }
+    ],
+    timeline: [
+      {
+        title: 'Out for Delivery',
+        date: 'Today, 10:15 AM',
+        description: 'Package assigned to courier rider (Md. Sohel Rana). Rider is on the way to your delivery address.',
+        completed: true,
+        current: true,
+      },
+      {
+        title: 'Arrived at Local Hub',
+        date: 'Today, 07:30 AM',
+        description: 'Received at Dhaka North Dispatch Hub (Banani Distribution Center).',
+        completed: true,
+        current: false,
+      },
+      {
+        title: 'In Transit with Courier',
+        date: 'Yesterday, 08:45 PM',
+        description: 'Picked up by Steadfast Courier from Digital Dokan Central Warehouse.',
+        completed: true,
+        current: false,
+      },
+      {
+        title: 'Package Packed & Verified',
+        date: 'Yesterday, 03:20 PM',
+        description: 'Quality checked, sealed with security tape, and invoice attached.',
+        completed: true,
+        current: false,
+      },
+      {
+        title: 'Order Confirmed',
+        date: 'Nov 11, 2026, 11:30 AM',
+        description: 'Order confirmed successfully. Customer verified via phone call.',
+        completed: true,
+        current: false,
+      }
+    ]
+  },
+  {
+    id: 'DD-10301',
+    trackingId: 'DD-10301',
+    customerName: 'Tanvir Rahman',
+    customerPhone: '+880 1819-876543',
+    customerAddress: 'Sector 4, Road 7, Uttara, Dhaka 1230',
+    status: 'processing',
+    statusStep: 2,
+    paymentMethod: 'Cash on Delivery',
+    paymentStatus: 'Pending',
+    orderDate: 'Nov 12, 2026, 09:15 AM',
+    estimatedDelivery: 'Tomorrow, Nov 13, 2026',
+    courier: 'Pathao Express',
+    courierTrackingCode: 'PE-592810',
+    courierRider: 'Pending Assignment',
+    subtotal: 949.00,
+    discount: 0.00,
+    shippingFee: 5.00,
+    total: 954.00,
+    items: [
+      {
+        id: 2,
+        name: 'Samsung Galaxy S24 Ultra',
+        slug: 'samsung-galaxy-s24-ultra',
+        price: 949.00,
+        quantity: 1,
+        image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80',
+      }
+    ],
+    timeline: [
+      {
+        title: 'Packaging & Quality Check',
+        date: 'Today, 01:20 PM',
+        description: 'Device serial number logged and packed in shockproof bubble mailer.',
+        completed: true,
+        current: true,
+      },
+      {
+        title: 'Order Confirmed',
+        date: 'Today, 09:15 AM',
+        description: 'Order placed by customer and registered in Digital Dokan fulfillment system.',
+        completed: true,
+        current: false,
+      }
+    ]
+  },
+  {
+    id: 'DD-10188',
+    trackingId: 'DD-10188',
+    customerName: 'Ayesha Siddiqua',
+    customerPhone: '+880 1912-345678',
+    customerAddress: 'Apartment 5B, GEC Circle, Nasirabad, Chattogram 4000',
+    status: 'delivered',
+    statusStep: 5,
+    paymentMethod: 'bKash Online Payment',
+    paymentStatus: 'Paid ($1098.00)',
+    orderDate: 'Nov 09, 2026, 02:40 PM',
+    estimatedDelivery: 'Delivered on Nov 11, 2026',
+    courier: 'eCourier Express',
+    courierTrackingCode: 'EC-291048',
+    courierRider: 'Kawsar Ahmed',
+    subtotal: 1098.00,
+    discount: 0.00,
+    shippingFee: 0.00,
+    total: 1098.00,
+    items: [
+      {
+        id: 3,
+        name: 'Google Pixel 9 Pro',
+        slug: 'google-pixel-9-pro',
+        price: 899.00,
+        quantity: 1,
+        image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80',
+      },
+      {
+        id: 15,
+        name: 'AirPods Pro 2',
+        slug: 'airpods-pro-2',
+        price: 199.00,
+        quantity: 1,
+        image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80',
+      }
+    ],
+    timeline: [
+      {
+        title: 'Delivered & Received',
+        date: 'Yesterday, 03:40 PM',
+        description: 'Package successfully delivered to Ayesha Siddiqua. Signed & confirmed.',
+        completed: true,
+        current: true,
+      },
+      {
+        title: 'Out for Delivery',
+        date: 'Yesterday, 11:00 AM',
+        description: 'Rider Kawsar Ahmed out for delivery in GEC Nasirabad area.',
+        completed: true,
+        current: false,
+      },
+      {
+        title: 'Arrived at Chattogram Hub',
+        date: 'Nov 10, 2026, 06:15 PM',
+        description: 'Inter-district transport completed from Dhaka Central Hub to Chattogram Hub.',
+        completed: true,
+        current: false,
+      },
+      {
+        title: 'Dispatched from Central Hub',
+        date: 'Nov 10, 2026, 08:30 AM',
+        description: 'Dispatched via overnight logistics carrier.',
+        completed: true,
+        current: false,
+      },
+      {
+        title: 'Order Confirmed',
+        date: 'Nov 09, 2026, 02:40 PM',
+        description: 'Order placed with online payment verification completed.',
+        completed: true,
+        current: false,
+      }
+    ]
+  }
+];

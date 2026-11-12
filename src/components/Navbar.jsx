@@ -11,6 +11,7 @@ const navLinks = [
   { name: 'Brands', path: '/brands' },
   { name: 'Accessories', path: '/category/accessories' },
   { name: 'Deals', path: '/deals' },
+  { name: 'Track Order', path: '/track-order' },
   { name: 'About', path: '/about' },
 ];
 
