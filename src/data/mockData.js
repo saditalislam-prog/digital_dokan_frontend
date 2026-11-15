@@ -91,7 +91,7 @@ export const mockBrands = [
     "id": 7,
     "name": "Sony",
     "slug": "sony",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.svg"
+    "logo": "/brands/sony-white.svg"
   },
   {
     "id": 8,

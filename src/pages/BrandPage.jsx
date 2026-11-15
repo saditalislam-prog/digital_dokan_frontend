@@ -260,6 +260,19 @@ export default function BrandPage() {
                                   className="max-h-7 max-w-full object-contain hidden dark:block"
                                 />
                               </>
+                            ) : brand.slug === 'sony' ? (
+                              <>
+                                <img
+                                  src="/brands/sony-dark.svg"
+                                  alt={brand.name}
+                                  className="max-h-4 max-w-full object-contain dark:hidden"
+                                />
+                                <img
+                                  src="/brands/sony-white.svg"
+                                  alt={brand.name}
+                                  className="max-h-4 max-w-full object-contain hidden dark:block drop-shadow-[0_2px_8px_rgba(255,255,255,0.18)]"
+                                />
+                              </>
                             ) : brand.logo ? (
                               <img
                                 src={brand.logo}
@@ -415,6 +428,19 @@ export default function BrandPage() {
                           src="/brands/samsung-white.png"
                           alt="Samsung"
                           className="max-h-10 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
+                        />
+                      </>
+                    ) : currentSlug === 'sony' ? (
+                      <>
+                        <img
+                          src="/brands/sony-dark.svg"
+                          alt="Sony"
+                          className="max-h-7 max-w-[180px] w-auto object-contain dark:hidden"
+                        />
+                        <img
+                          src="/brands/sony-white.svg"
+                          alt="Sony"
+                          className="max-h-7 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
                         />
                       </>
                     ) : (

@@ -30,6 +30,7 @@ export default function BrandSection({ variant = 'logos' }) {
   const renderBrandLogo = (brand, isCards = false) => {
     const isApple = brand.slug === 'apple' || brand.name?.toLowerCase() === 'apple';
     const isSamsung = brand.slug === 'samsung' || brand.name?.toLowerCase() === 'samsung';
+    const isSony = brand.slug === 'sony' || brand.name?.toLowerCase() === 'sony';
 
     if (isApple) {
       return (
@@ -68,6 +69,27 @@ export default function BrandSection({ variant = 'logos' }) {
             className={`${
               isCards ? 'max-h-8 max-w-[125px]' : 'max-h-7 sm:max-h-8 max-w-[130px]'
             } w-auto object-contain hidden dark:block opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]`}
+          />
+        </>
+      );
+    }
+
+    if (isSony) {
+      return (
+        <>
+          <img
+            src="/brands/sony-dark.svg"
+            alt={brand.name}
+            className={`${
+              isCards ? 'max-h-4 max-w-[125px]' : 'max-h-4 max-w-[130px]'
+            } w-auto object-contain dark:hidden opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300`}
+          />
+          <img
+            src="/brands/sony-white.svg"
+            alt={brand.name}
+            className={`${
+              isCards ? 'max-h-4 max-w-[125px]' : 'max-h-4 max-w-[130px]'
+            } w-auto object-contain hidden dark:block opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 drop-shadow-[0_2px_10px_rgba(255,255,255,0.18)]`}
           />
         </>
       );
