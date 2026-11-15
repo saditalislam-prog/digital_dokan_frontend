@@ -26,18 +26,23 @@ export default function Login() {
 
   return (
     <div className="min-h-[80vh] bg-surface flex items-center justify-center py-16 px-4">
-      <div className="bg-white rounded-3xl p-8 sm:p-10 border border-gray-100 shadow-xl max-w-md w-full">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 border border-gray-100 dark:border-slate-800 shadow-xl max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-3">
             <img
               src="/logo-transparent.png"
               alt="Digital Dokan"
-              className="h-12 w-auto mx-auto object-contain animate-logo-entrance hover:scale-105 transition-transform duration-300"
+              className="h-12 w-auto mx-auto object-contain animate-logo-entrance hover:scale-105 transition-transform duration-300 dark:hidden"
+            />
+            <img
+              src="/logo-white-text.png"
+              alt="Digital Dokan"
+              className="h-12 w-auto mx-auto object-contain animate-logo-entrance hover:scale-105 transition-transform duration-300 hidden dark:block"
             />
           </Link>
-          <h2 className="text-2xl font-extrabold text-gray-900">Welcome Back</h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">Welcome Back</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Sign in to access your cart, orders, and account
           </p>
         </div>

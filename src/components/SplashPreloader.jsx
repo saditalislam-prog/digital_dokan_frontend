@@ -41,13 +41,13 @@ export default function SplashPreloader() {
           <div className="absolute w-40 h-40 rounded-full bg-accent/25 blur-3xl pointer-events-none animate-pulse-slow" />
 
           {/* Squircle Icon Card */}
-          <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white border border-gray-100 shadow-[0_12px_40px_-5px_rgba(37,99,235,0.22)] flex items-center justify-center p-5 overflow-hidden animate-splash-card">
+          <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-[0_12px_40px_-5px_rgba(37,99,235,0.22)] dark:shadow-[0_12px_40px_-5px_rgba(37,99,235,0.4)] flex items-center justify-center p-5 overflow-hidden animate-splash-card">
             <img
               src="/logo-icon.png"
               alt="Digital Dokan Icon"
               className="w-full h-full object-contain select-none"
               onError={(e) => {
-                e.target.src = '/logo-transparent.png';
+                e.target.src = '/logo-white-text.png';
               }}
             />
             {/* Shimmer light sweep */}
@@ -57,10 +57,10 @@ export default function SplashPreloader() {
 
         {/* Brand Name Typography */}
         <div className="mt-6 text-center animate-fade-in">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white">
             Digital<span className="text-accent">Dokan</span>
           </h1>
-          <p className="text-[10px] sm:text-xs font-extrabold tracking-[0.3em] text-gray-400 uppercase mt-2">
+          <p className="text-[10px] sm:text-xs font-extrabold tracking-[0.3em] text-gray-500 dark:text-gray-400 uppercase mt-2">
             Gadgets For A Smarter You
           </p>
         </div>
@@ -68,7 +68,7 @@ export default function SplashPreloader() {
 
       {/* Bottom Loading Progress Bar */}
       <div className="absolute bottom-12 sm:bottom-16 flex flex-col items-center gap-3">
-        <div className="w-36 sm:w-44 h-1 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+        <div className="w-36 sm:w-44 h-1 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
           <div className="h-full bg-gradient-to-r from-accent via-blue-500 to-sky-400 rounded-full animate-splash-progress" />
         </div>
       </div>

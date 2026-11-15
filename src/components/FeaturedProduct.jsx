@@ -5,40 +5,40 @@ export default function FeaturedProduct() {
   return (
     <section className="py-10 bg-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-slate-100 rounded-3xl border border-gray-200/80 shadow-md">
+        <div className="relative overflow-hidden bg-gradient-to-br from-blue-50/80 via-indigo-50/50 to-slate-100 dark:from-[#0d1629] dark:via-[#111c35] dark:to-[#090e1d] rounded-3xl border border-gray-200/80 dark:border-slate-800 shadow-md dark:shadow-2xl">
           <div className="grid lg:grid-cols-12 gap-8 items-center p-8 sm:p-12 lg:p-16">
             
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
               <div className="flex items-center gap-2">
-                <Apple className="w-7 h-7 text-gray-900" />
-                <span className="text-xs font-bold text-gray-700 uppercase tracking-widest">
+                <Apple className="w-7 h-7 text-gray-900 dark:text-white" />
+                <span className="text-xs font-bold text-gray-700 dark:text-accent-light uppercase tracking-widest">
                   Apple Flagship
                 </span>
               </div>
 
               <div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
                   iPhone 16 Pro
                 </h2>
-                <p className="text-xl sm:text-2xl text-gray-500 font-semibold mt-2">
+                <p className="text-xl sm:text-2xl text-accent dark:text-accent-light font-bold mt-2">
                   Bigger. Brighter. Bolder.
                 </p>
               </div>
 
-              <p className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-lg">
+              <p className="text-gray-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed max-w-lg">
                 Forged in Grade 5 Titanium with the breakthrough A18 Pro chip, 48MP Fusion camera system, and the thinnest borders ever on any Apple product.
               </p>
 
-              <div className="flex items-center gap-4 text-xs sm:text-sm text-gray-700 font-medium">
+              <div className="flex items-center gap-4 text-xs sm:text-sm text-gray-700 dark:text-slate-200 font-medium">
                 <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-accent" /> A18 Pro Chip</span>
                 <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-accent" /> Camera Control</span>
                 <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-accent" /> 4K 120 fps Dolby</span>
               </div>
 
               <div className="flex items-baseline gap-3 pt-2">
-                <span className="text-3xl sm:text-4xl font-black text-gray-900">$999.00</span>
-                <span className="text-base text-gray-400 line-through">$1,099.00</span>
+                <span className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white">$999.00</span>
+                <span className="text-base text-gray-400 dark:text-slate-500 line-through">$1,099.00</span>
               </div>
 
               <div className="pt-2">

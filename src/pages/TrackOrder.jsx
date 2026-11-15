@@ -307,7 +307,7 @@ export default function TrackOrder() {
               </div>
 
               {/* Estimated Delivery Notice Banner */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-900 border border-blue-100 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-accent text-white flex items-center justify-center shrink-0 shadow-md shadow-accent/20">
                     <Truck className="w-6 h-6" />
@@ -316,7 +316,7 @@ export default function TrackOrder() {
                     <span className="text-xs font-bold uppercase tracking-wider text-accent block">
                       Estimated Delivery
                     </span>
-                    <span className="text-base sm:text-lg font-black text-gray-900">
+                    <span className="text-base sm:text-lg font-black text-gray-900 dark:text-white">
                       {currentOrder.estimatedDelivery || 'In 1-2 business days'}
                     </span>
                   </div>

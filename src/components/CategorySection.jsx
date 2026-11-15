@@ -62,9 +62,9 @@ export default function CategorySection() {
             <Link
               key={slug}
               to={`/category/${slug}`}
-              className="group flex flex-col items-center p-4 rounded-2xl bg-[#f8fafc] hover:bg-white border border-gray-100 hover:border-accent/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5"
+              className="group flex flex-col items-center p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-gray-100 dark:border-slate-800 hover:border-accent/40 dark:hover:border-accent/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5"
             >
-              <div className="w-full aspect-square rounded-xl overflow-hidden bg-white mb-3 p-2.5 flex items-center justify-center border border-gray-100/80 group-hover:border-accent/20 transition-colors">
+              <div className="w-full aspect-square rounded-xl overflow-hidden bg-white dark:bg-slate-950/70 mb-3 p-2.5 flex items-center justify-center border border-gray-100/80 dark:border-slate-800 group-hover:border-accent/20 dark:group-hover:border-accent/40 transition-colors">
                 <img
                   src={image}
                   alt={name}
@@ -74,7 +74,7 @@ export default function CategorySection() {
                   }}
                 />
               </div>
-              <span className="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-accent transition-colors text-center">
+              <span className="text-xs sm:text-sm font-bold text-gray-800 dark:text-slate-200 group-hover:text-accent dark:group-hover:text-accent transition-colors text-center">
                 {name}
               </span>
             </Link>
