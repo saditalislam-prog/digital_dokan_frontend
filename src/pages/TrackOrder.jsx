@@ -43,23 +43,26 @@ export default function TrackOrder() {
     }
   }, []);
 
-  // When query param changes or on mount, search
+  // When query param changes or on mount, search only if queryId exists
   useEffect(() => {
     if (queryId) {
       setInputVal(queryId);
       performSearch(queryId);
     } else {
-      // Default to first sample order if nothing searched yet
-      const first = sampleOrders[0];
-      setCurrentOrder(first);
-      setInputVal(first.id);
-      setSearched(true);
+      // Do not auto-show any order if user has not searched yet
+      setCurrentOrder(null);
+      setSearched(false);
+      setInputVal('');
     }
   }, [queryId]);
 
   const performSearch = (searchTerm) => {
     const term = searchTerm.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (!term) return;
+    if (!term) {
+      setCurrentOrder(null);
+      setSearched(false);
+      return;
+    }
 
     // Search in user orders from localStorage first
     let found = userOrders.find((o) => {
@@ -83,9 +86,24 @@ export default function TrackOrder() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (!inputVal.trim()) return;
+    if (!inputVal.trim()) {
+      setCurrentOrder(null);
+      setSearched(false);
+      setSearchParams({});
+      return;
+    }
     setSearchParams({ id: inputVal.trim() });
     performSearch(inputVal);
+  };
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setInputVal(val);
+    if (!val.trim()) {
+      setCurrentOrder(null);
+      setSearched(false);
+      setSearchParams({});
+    }
   };
 
   const handleCopyId = (id) => {
@@ -188,7 +206,7 @@ export default function TrackOrder() {
                 <input
                   type="text"
                   value={inputVal}
-                  onChange={(e) => setInputVal(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="Order ID (e.g. DD-10294) or Phone Number..."
                   className="w-full pl-11 pr-4 py-3 bg-white text-gray-900 text-sm rounded-xl outline-none placeholder-gray-400 font-medium shadow-inner"
                 />
@@ -569,12 +587,12 @@ export default function TrackOrder() {
           </div>
         ) : searched ? (
           /* Not Found State */
-          <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto space-y-4">
-            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-gray-100 dark:border-slate-800 shadow-sm max-w-lg mx-auto space-y-4">
+            <div className="w-16 h-16 bg-red-50 dark:bg-red-950/30 text-red-500 rounded-full flex items-center justify-center mx-auto">
               <AlertCircle className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900">Order Not Found</h3>
-            <p className="text-xs text-gray-500 leading-relaxed">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Order Not Found</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
               We couldn't find any order matching "<strong>{inputVal}</strong>". Please double check your Order ID or phone number.
             </p>
             <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
@@ -591,13 +609,42 @@ export default function TrackOrder() {
               </button>
               <Link
                 to="/shop"
-                className="px-5 py-2.5 bg-surface text-gray-700 border border-gray-200 rounded-xl text-xs font-bold hover:bg-gray-100 transition-colors"
+                className="px-5 py-2.5 bg-surface text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:bg-gray-100 transition-colors"
               >
                 Back to Shop
               </Link>
             </div>
           </div>
-        ) : null}
+        ) : (
+          /* Initial Ready / Empty State */
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 text-center border border-gray-100 dark:border-slate-800 shadow-sm max-w-xl mx-auto space-y-5 animate-fade-in">
+            <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+              <Package className="w-8 h-8" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Ready to Track Your Order</h3>
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed mt-1.5 max-w-md mx-auto">
+                Enter your <strong>Tracking ID</strong> (e.g., DD-10294) or your contact number above to view real-time courier updates, dispatched route, and package details.
+              </p>
+            </div>
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
+              <span className="text-xs text-gray-400 font-medium">Or try a sample order:</span>
+              {sampleOrders.map((sample) => (
+                <button
+                  key={sample.id}
+                  onClick={() => {
+                    setInputVal(sample.id);
+                    setSearchParams({ id: sample.id });
+                    performSearch(sample.id);
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-surface dark:bg-slate-800 hover:bg-accent hover:text-white text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-slate-700 transition-all text-xs font-semibold"
+                >
+                  {sample.id}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Support & Assistance Banner */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">

@@ -1074,6 +1074,396 @@ export const mockProducts = [
     "is_deal": false,
     "deal_percentage": 0,
     "created_at": "2026-10-20 16:40:20.964231"
+  },
+  {
+    "id": 25,
+    "name": "Apple MagSafe 3-in-1 Wireless Charging Stand",
+    "slug": "apple-magsafe-3-in-1-wireless-charging-stand",
+    "description": "Fast charge your iPhone, Apple Watch, and AirPods simultaneously with official 15W MagSafe technology.",
+    "specifications": {
+      "Compatibility": "iPhone 12-16, Apple Watch, AirPods",
+      "Wireless Output": "15W MagSafe Fast Charge",
+      "Materials": "Stainless Steel & Premium Soft-Touch Base",
+      "Power Adapter": "40W Power Supply Included",
+      "Standby Mode": "Full iOS StandBy Support"
+    },
+    "price": 129,
+    "old_price": 149,
+    "image": "https://images.unsplash.com/photo-1586816879360-004f5b0c51e3?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 1,
+      "name": "Apple",
+      "slug": "apple",
+      "logo": "/brands/apple.png"
+    },
+    "rating": 4.9,
+    "review_count": 218,
+    "stock": 45,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 13,
+    "created_at": "2026-10-21 10:15:00.000000"
+  },
+  {
+    "id": 26,
+    "name": "Anker Prime 100W GaN 3-Port Fast Wall Charger",
+    "slug": "anker-prime-100w-gan-fast-charger",
+    "description": "Ultra-compact Gallium Nitride wall charger with 2 USB-C ports and 1 USB-A port for simultaneous high-speed laptop and phone charging.",
+    "specifications": {
+      "Total Wattage": "100W Max",
+      "Ports": "2x USB-C, 1x USB-A",
+      "Technology": "GaNPrime & ActiveShield 2.0",
+      "Compatibility": "MacBook, iPhone, Galaxy, iPad, Laptops",
+      "Dimensions": "43% smaller than standard 96W charger"
+    },
+    "price": 84.99,
+    "old_price": 99.99,
+    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 1,
+      "name": "Apple",
+      "slug": "apple",
+      "logo": "/brands/apple.png"
+    },
+    "rating": 4.8,
+    "review_count": 184,
+    "stock": 60,
+    "is_featured": false,
+    "is_new": false,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 15,
+    "created_at": "2026-10-21 11:20:00.000000"
+  },
+  {
+    "id": 27,
+    "name": "Sony WH-1000XM5 Wireless Noise Canceling Headphones",
+    "slug": "sony-wh-1000xm5-wireless-headphones",
+    "description": "Industry-leading noise cancellation with 2 processors, 8 microphones, LDAC Hi-Res Audio, and 30-hour battery life.",
+    "specifications": {
+      "ANC": "Auto NC Optimizer with V1 & QN1 processors",
+      "Battery Life": "30 hours (3 min charge = 3 hours playback)",
+      "Driver": "30mm precision engineered carbon fiber",
+      "Microphones": "4 beamforming mics with AI noise reduction",
+      "Weight": "250g ultra-light design"
+    },
+    "price": 399,
+    "old_price": 429,
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 7,
+      "name": "Sony",
+      "slug": "sony",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.svg"
+    },
+    "rating": 4.9,
+    "review_count": 420,
+    "stock": 25,
+    "is_featured": true,
+    "is_new": false,
+    "is_bestseller": true,
+    "is_deal": false,
+    "deal_percentage": 0,
+    "created_at": "2026-10-21 12:00:00.000000"
+  },
+  {
+    "id": 28,
+    "name": "Samsung Galaxy SmartTag 2 (4-Pack)",
+    "slug": "samsung-galaxy-smarttag-2-4-pack",
+    "description": "Track keys, backpacks, and valuables with Compass View, IP67 water resistance, and up to 500 days of battery life.",
+    "specifications": {
+      "Battery Life": "Up to 500 days (Power Saving: 700 days)",
+      "Water Resistance": "IP67 Certified",
+      "Connectivity": "Bluetooth BLE 5.3 + Ultra-Wideband (UWB)",
+      "Network": "SmartThings Find Network",
+      "Pack": "4 SmartTags Included"
+    },
+    "price": 99.99,
+    "old_price": null,
+    "image": "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 2,
+      "name": "Samsung",
+      "slug": "samsung",
+      "logo": "/brands/samsung.png"
+    },
+    "rating": 4.7,
+    "review_count": 96,
+    "stock": 50,
+    "is_featured": false,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": false,
+    "deal_percentage": 0,
+    "created_at": "2026-10-21 13:00:00.000000"
+  },
+  {
+    "id": 29,
+    "name": "Logitech MX Master 3S Wireless Performance Mouse",
+    "slug": "logitech-mx-master-3s-wireless-mouse",
+    "description": "Quiet clicks, 8,000 DPI track-on-glass sensor, and electromagnetic MagSpeed scrolling for master creators.",
+    "specifications": {
+      "Sensor": "Darkfield 8000 DPI (Works on glass)",
+      "Clicks": "Quiet Click Technology (90% less noise)",
+      "Scroll": "MagSpeed 1,000 lines/second",
+      "Battery": "Up to 70 days per full USB-C charge",
+      "Multi-Device": "Connect up to 3 computers via Flow"
+    },
+    "price": 99.99,
+    "old_price": 109.99,
+    "image": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 8,
+      "name": "Microsoft",
+      "slug": "microsoft",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg"
+    },
+    "rating": 4.9,
+    "review_count": 340,
+    "stock": 40,
+    "is_featured": true,
+    "is_new": false,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 9,
+    "created_at": "2026-10-21 13:30:00.000000"
+  },
+  {
+    "id": 30,
+    "name": "Keychron K2 Pro QMK Wireless Mechanical Keyboard",
+    "slug": "keychron-k2-pro-wireless-keyboard",
+    "description": "Compact 75% layout, hot-swappable Keychron K Pro switches, south-facing RGB, and QMK/VIA key remapping.",
+    "specifications": {
+      "Layout": "75% Compact (84 keys)",
+      "Switches": "Hot-swappable Pre-lubed K Pro Red",
+      "Connectivity": "Bluetooth 5.1 + Detachable Type-C",
+      "OS Support": "macOS / Windows / iOS / Android",
+      "Battery": "4000 mAh rechargeable"
+    },
+    "price": 119.99,
+    "old_price": null,
+    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 1,
+      "name": "Apple",
+      "slug": "apple",
+      "logo": "/brands/apple.png"
+    },
+    "rating": 4.8,
+    "review_count": 165,
+    "stock": 35,
+    "is_featured": false,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": false,
+    "deal_percentage": 0,
+    "created_at": "2026-10-21 14:00:00.000000"
+  },
+  {
+    "id": 31,
+    "name": "UGREEN Revodok Pro 9-in-1 Dual 4K HDMI USB-C Hub",
+    "slug": "ugreen-revodok-pro-9-in-1-usb-c-hub",
+    "description": "Dual 4K@60Hz HDMI display outputs, 100W Power Delivery pass-through, Gigabit Ethernet, and 5Gbps USB-A ports.",
+    "specifications": {
+      "Video Output": "Dual 4K@60Hz HDMI",
+      "Power Delivery": "100W PD Pass-Through (85W to device)",
+      "Network": "1000Mbps Gigabit RJ45",
+      "USB Ports": "2x USB 3.0 (5Gbps), 1x USB-C Data",
+      "Card Reader": "SD & MicroSD 104MB/s"
+    },
+    "price": 59.99,
+    "old_price": 79.99,
+    "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 1,
+      "name": "Apple",
+      "slug": "apple",
+      "logo": "/brands/apple.png"
+    },
+    "rating": 4.7,
+    "review_count": 128,
+    "stock": 55,
+    "is_featured": false,
+    "is_new": false,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 25,
+    "created_at": "2026-10-21 14:30:00.000000"
+  },
+  {
+    "id": 32,
+    "name": "Spigen Ultra Hybrid MagFit Protective Case",
+    "slug": "spigen-ultra-hybrid-magfit-case",
+    "description": "Crystal clear non-yellowing polycarbonate back with Air Cushion Technology and reinforced MagSafe magnetic ring.",
+    "specifications": {
+      "Protection": "Military-grade Air Cushion corners",
+      "Magnetic Ring": "Built-in N52 strong magnets",
+      "Anti-Yellowing": "Blue resin infusion for lasting clarity",
+      "Raised Lips": "1.5mm screen and camera bezel lip",
+      "Weight": "38 grams"
+    },
+    "price": 29.99,
+    "old_price": 34.99,
+    "image": "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 1,
+      "name": "Apple",
+      "slug": "apple",
+      "logo": "/brands/apple.png"
+    },
+    "rating": 4.8,
+    "review_count": 210,
+    "stock": 80,
+    "is_featured": false,
+    "is_new": false,
+    "is_bestseller": false,
+    "is_deal": false,
+    "deal_percentage": 0,
+    "created_at": "2026-10-21 15:00:00.000000"
+  },
+  {
+    "id": 33,
+    "name": "Google Pixel Buds Pro 2",
+    "slug": "google-pixel-buds-pro-2",
+    "description": "Engineered with the Tensor A1 chip for 2x noise cancellation, Silent Seal 2.0, Gemini Live hands-free conversation, and 30hr battery.",
+    "specifications": {
+      "Chip": "Google Tensor A1 Audio Chip",
+      "ANC": "Silent Seal 2.0 with active ear-canal adaptation",
+      "AI Integration": "Direct Gemini Live Voice Assistant",
+      "Battery": "Up to 8 hours with ANC (30 with case)",
+      "Fit": "Twist-to-adjust stabilizer wing"
+    },
+    "price": 229,
+    "old_price": null,
+    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 3,
+      "name": "Google",
+      "slug": "google",
+      "logo": "/brands/google.png"
+    },
+    "rating": 4.6,
+    "review_count": 78,
+    "stock": 35,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": false,
+    "deal_percentage": 0,
+    "created_at": "2026-10-21 15:30:00.000000"
+  },
+  {
+    "id": 34,
+    "name": "Xiaomi 67W HyperCharge Power Bank 20000mAh",
+    "slug": "xiaomi-67w-hypercharge-power-bank",
+    "description": "Massive 20000mAh capacity with 67W rapid output. Charge smartphones, tablets, and lightweight laptops at full speed.",
+    "specifications": {
+      "Capacity": "20,000mAh 74Wh Li-ion",
+      "Max Output": "67W HyperCharge via USB-C",
+      "Ports": "1x USB-C (In/Out 67W), 2x USB-A (22.5W)",
+      "Safety": "9-layer circuit protection & temperature sensor",
+      "Low Current Mode": "Safe charging for earbuds & fitness bands"
+    },
+    "price": 49.99,
+    "old_price": 59.99,
+    "image": "https://images.unsplash.com/photo-1622445262464-84b1456045b6?w=600&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 5,
+      "name": "Accessories",
+      "slug": "accessories",
+      "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaHeadphones",
+      "description": "Essential accessories and charging gear"
+    },
+    "brand": {
+      "id": 5,
+      "name": "Xiaomi",
+      "slug": "xiaomi",
+      "logo": "/brands/xiaomi.png"
+    },
+    "rating": 4.7,
+    "review_count": 115,
+    "stock": 70,
+    "is_featured": false,
+    "is_new": false,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 17,
+    "created_at": "2026-10-21 16:00:00.000000"
   }
 ];
 

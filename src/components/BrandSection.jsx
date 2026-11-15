@@ -101,7 +101,7 @@ export default function BrandSection({ variant = 'logos' }) {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Shop by Brand</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Choose from the top brands you love</p>
             </div>
-            <Link to="/brand/all" className="text-xs sm:text-sm font-bold text-accent hover:underline flex items-center gap-1">
+            <Link to="/brands" className="text-xs sm:text-sm font-bold text-accent hover:underline flex items-center gap-1">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
