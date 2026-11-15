@@ -228,20 +228,46 @@ export default function BrandPage() {
                   return (
                     <div
                       key={brand.id}
-                      className="group bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1"
+                      className="group bg-white dark:bg-slate-900/90 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1"
                     >
                       <div>
                         {/* Top Brand Emblem & Count */}
                         <div className="flex items-start justify-between mb-5">
-                          <div className="w-16 h-16 bg-surface rounded-2xl p-2.5 flex items-center justify-center border border-gray-100 shadow-inner group-hover:scale-105 transition-transform">
-                            {brand.logo ? (
+                          <div className="w-16 h-16 bg-surface dark:bg-slate-950/70 rounded-2xl p-2.5 flex items-center justify-center border border-gray-100 dark:border-slate-800 shadow-inner group-hover:scale-105 transition-transform">
+                            {brand.slug === 'apple' ? (
+                              <>
+                                <img
+                                  src="/brands/apple.png"
+                                  alt={brand.name}
+                                  className="max-h-10 max-w-full object-contain dark:hidden"
+                                />
+                                <img
+                                  src="/brands/apple-white.png"
+                                  alt={brand.name}
+                                  className="max-h-10 max-w-full object-contain hidden dark:block"
+                                />
+                              </>
+                            ) : brand.slug === 'samsung' ? (
+                              <>
+                                <img
+                                  src="/brands/samsung-dark.png"
+                                  alt={brand.name}
+                                  className="max-h-7 max-w-full object-contain dark:hidden"
+                                />
+                                <img
+                                  src="/brands/samsung-white.png"
+                                  alt={brand.name}
+                                  className="max-h-7 max-w-full object-contain hidden dark:block"
+                                />
+                              </>
+                            ) : brand.logo ? (
                               <img
                                 src={brand.logo}
                                 alt={brand.name}
                                 className="max-h-10 max-w-full object-contain"
                               />
                             ) : (
-                              <span className="text-lg font-black text-gray-800">{brand.name[0]}</span>
+                              <span className="text-lg font-black text-gray-800 dark:text-white">{brand.name[0]}</span>
                             )}
                           </div>
                           <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-accent/10 text-accent">
@@ -250,7 +276,7 @@ export default function BrandPage() {
                         </div>
 
                         {/* Brand Title & Tagline */}
-                        <h3 className="text-xl font-extrabold text-gray-900 group-hover:text-accent transition-colors">
+                        <h3 className="text-xl font-extrabold text-gray-900 dark:text-white group-hover:text-accent transition-colors">
                           {brand.name}
                         </h3>
                         <p className="text-xs font-semibold text-accent mt-0.5 mb-2">
@@ -364,12 +390,40 @@ export default function BrandPage() {
 
                 {/* Brand Logo in Banner */}
                 {brands.find((b) => b.slug === currentSlug)?.logo && (
-                  <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-xl shrink-0 self-start md:self-center flex items-center justify-center border border-white/20">
-                    <img
-                      src={brands.find((b) => b.slug === currentSlug)?.logo}
-                      alt={brandName}
-                      className="max-h-16 max-w-[180px] w-auto object-contain"
-                    />
+                  <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-md p-6 rounded-3xl shadow-xl shrink-0 self-start md:self-center flex items-center justify-center border border-white/20 dark:border-slate-800">
+                    {currentSlug === 'apple' ? (
+                      <>
+                        <img
+                          src="/brands/apple.png"
+                          alt="Apple"
+                          className="max-h-16 max-w-[180px] w-auto object-contain dark:hidden"
+                        />
+                        <img
+                          src="/brands/apple-white.png"
+                          alt="Apple"
+                          className="max-h-16 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
+                        />
+                      </>
+                    ) : currentSlug === 'samsung' ? (
+                      <>
+                        <img
+                          src="/brands/samsung-dark.png"
+                          alt="Samsung"
+                          className="max-h-10 max-w-[180px] w-auto object-contain dark:hidden"
+                        />
+                        <img
+                          src="/brands/samsung-white.png"
+                          alt="Samsung"
+                          className="max-h-10 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
+                        />
+                      </>
+                    ) : (
+                      <img
+                        src={brands.find((b) => b.slug === currentSlug)?.logo}
+                        alt={brandName}
+                        className="max-h-16 max-w-[180px] w-auto object-contain"
+                      />
+                    )}
                   </div>
                 )}
               </div>
@@ -379,7 +433,7 @@ export default function BrandPage() {
             </div>
 
             {/* Brand Switcher Bar */}
-            <div className="bg-white rounded-2xl p-3 border border-gray-100 shadow-sm flex items-center gap-2 overflow-x-auto scrollbar-none">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 border border-gray-100 dark:border-slate-800 shadow-sm flex items-center gap-2 overflow-x-auto scrollbar-none">
               <Link
                 to="/brands"
                 className="px-4 py-2 rounded-xl text-xs font-bold shrink-0 transition-colors bg-surface hover:bg-gray-100 text-gray-700 flex items-center gap-1.5"
