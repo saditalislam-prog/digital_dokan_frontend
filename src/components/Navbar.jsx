@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Search, User, ShoppingCart, Menu, X, ChevronDown, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Search, User, ShoppingCart, Menu, X, ChevronDown, ShieldCheck, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useTheme } from '../context/ThemeContext';
 import SearchModal from './SearchModal';
 
 const navLinks = [
@@ -21,6 +22,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
   const { cartCount } = useCart();
+  const { toggleTheme, isDark } = useTheme();
   const location = useLocation();
 
   useEffect(() => {
@@ -98,6 +100,20 @@ export default function Navbar() {
                 aria-label="Search"
               >
                 <Search className="w-5 h-5" />
+              </button>
+
+              {/* Theme Toggle (Dark / Light) */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 text-gray-300 hover:text-white transition-all duration-200 hover:scale-110 rounded-xl hover:bg-white/10"
+                aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {isDark ? (
+                  <Sun className="w-5 h-5 text-amber-400 transition-transform duration-300 rotate-0 hover:rotate-90" />
+                ) : (
+                  <Moon className="w-5 h-5 text-blue-200 transition-transform duration-300 hover:-rotate-12" />
+                )}
               </button>
 
               <Link
@@ -179,6 +195,24 @@ export default function Navbar() {
                 Login / Register
               </Link>
             )}
+
+            {/* Mobile Theme Toggle Row */}
+            <div className="pt-3 mt-2 border-t border-white/10 flex items-center justify-between px-4 py-1 text-sm text-gray-300">
+              <span className="flex items-center gap-2 font-medium">
+                {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-blue-200" />}
+                {isDark ? 'Dark Mode' : 'Light Mode'}
+              </span>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label="Toggle Dark Mode"
+                className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${
+                  isDark ? 'bg-accent justify-end' : 'bg-gray-600 justify-start'
+                }`}
+              >
+                <div className="bg-white w-4 h-4 rounded-full shadow-md" />
+              </button>
+            </div>
           </div>
         </div>
       </nav>

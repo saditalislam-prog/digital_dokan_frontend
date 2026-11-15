@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Custom theme */
 @theme {
   --color-primary: #0f1b3d;
@@ -8,8 +10,126 @@
   --color-accent: #2563eb;
   --color-accent-light: #3b82f6;
   --color-accent-dark: #1d4ed8;
-  --color-surface: #f8fafc;
-  --color-surface-dark: #e2e8f0;
+  --color-surface: var(--bg-surface, #f8fafc);
+  --color-surface-dark: var(--bg-surface-dark, #e2e8f0);
+}
+
+:root {
+  --bg-surface: #f8fafc;
+  --bg-surface-dark: #e2e8f0;
+}
+
+html.dark {
+  --bg-surface: #0a0f1d;
+  --bg-surface-dark: #131b2e;
+  color-scheme: dark;
+}
+
+/* Global Dark Mode Overrides for Complete Coverage */
+.dark body {
+  background-color: #0a0f1d;
+  color: #f1f5f9;
+}
+
+/* Backgrounds */
+.dark .bg-white {
+  background-color: #111827 !important;
+}
+
+.dark .bg-surface {
+  background-color: #0a0f1d !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #162032 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1f293d !important;
+}
+
+/* Text colors */
+.dark .text-gray-900 {
+  color: #f8fafc !important;
+}
+
+.dark .text-gray-800 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-500 {
+  color: #8395ad !important;
+}
+
+.dark .text-gray-400 {
+  color: #64748b !important;
+}
+
+/* Borders */
+.dark .border-gray-100 {
+  border-color: #1e293b !important;
+}
+
+.dark .border-gray-200 {
+  border-color: #334155 !important;
+}
+
+.dark .border-gray-300 {
+  border-color: #475569 !important;
+}
+
+/* Form Inputs, Selects, Textareas */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  background-color: #162032 !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Shadows in dark mode */
+.dark .shadow-sm {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Skeleton loader in dark mode */
+.dark .skeleton {
+  background: linear-gradient(90deg, #162032 25%, #1e293b 50%, #162032 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+/* Scrollbar in dark mode */
+.dark ::-webkit-scrollbar-track {
+  background: #0a0f1d !important;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155 !important;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569 !important;
 }
 
 /* Smooth scrolling */
