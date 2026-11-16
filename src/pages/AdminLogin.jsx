@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, Lock, User, AlertCircle, ArrowRight, Eye, EyeOff, KeyRound, HelpCircle } from 'lucide-react';
+import { ShieldCheck, Lock, User, AlertCircle, ArrowRight, Eye, EyeOff, KeyRound } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function AdminLogin() {
@@ -117,27 +117,6 @@ export default function AdminLogin() {
                 title={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Quick Forgot Password Help Helper */}
-          <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-start gap-2.5 text-xs text-gray-300">
-            <HelpCircle className="w-4 h-4 text-accent-light shrink-0 mt-0.5" />
-            <div className="space-y-1 text-[11px]">
-              <span className="font-semibold text-white block">Forgot Password? / পাসওয়ার্ড ভুলে গেছেন?</span>
-              <p className="text-gray-400">
-                Default Staff Credentials: Username <strong className="text-white">admin</strong> | Password <strong className="text-white">admin123</strong>.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setUsername('admin');
-                  setPassword('admin123');
-                }}
-                className="text-accent-light hover:underline font-bold inline-block"
-              >
-                Click here to auto-fill & login
               </button>
             </div>
           </div>
