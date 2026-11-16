@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
@@ -27,42 +28,44 @@ import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <CartProvider>
-            <SplashPreloader />
-            <div className="min-h-screen flex flex-col bg-surface font-sans text-gray-800 dark:text-gray-100 transition-colors duration-300">
-              <Navbar />
-              <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/shop" element={<Shop />} />
-                  <Route path="/product/:slug" element={<ProductDetail />} />
-                  <Route path="/category/:slug" element={<CategoryPage />} />
-                  <Route path="/brands" element={<BrandPage />} />
-                  <Route path="/brand/:slug" element={<BrandPage />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/deals" element={<Deals />} />
-                  <Route path="/track-order" element={<TrackOrder />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:slug" element={<BlogPostDetail />} />
-                  <Route path="/admin-login" element={<AdminLogin />} />
-                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                  <Route path="/admin" element={<AdminDashboard />} />
-                </Routes>
-              </main>
-              <ScrollToTop />
-              <Footer />
-            </div>
-          </CartProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ThemeProvider>
+          <AuthProvider>
+            <CartProvider>
+              <SplashPreloader />
+              <div className="min-h-screen flex flex-col bg-surface font-sans text-gray-800 dark:text-gray-100 transition-colors duration-300">
+                <Navbar />
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/shop" element={<Shop />} />
+                    <Route path="/product/:slug" element={<ProductDetail />} />
+                    <Route path="/category/:slug" element={<CategoryPage />} />
+                    <Route path="/brands" element={<BrandPage />} />
+                    <Route path="/brand/:slug" element={<BrandPage />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/deals" element={<Deals />} />
+                    <Route path="/track-order" element={<TrackOrder />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/blog/:slug" element={<BlogPostDetail />} />
+                    <Route path="/admin-login" element={<AdminLogin />} />
+                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
+                  </Routes>
+                </main>
+                <ScrollToTop />
+                <Footer />
+              </div>
+            </CartProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

@@ -12,16 +12,20 @@ const fallbackProducts = [
 ];
 
 export default function BestSellers() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(fallbackProducts);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     API.get('/products/', { params: { bestseller: true, limit: 4 } })
       .then(res => {
         if (!cancelled) {
-          const data = res.data.results || res.data;
-          setProducts(data.length > 0 ? data : fallbackProducts);
+          const list = Array.isArray(res.data)
+            ? res.data
+            : (Array.isArray(res.data?.results) ? res.data.results : []);
+          if (list.length > 0) {
+            setProducts(list);
+          }
         }
       })
       .catch(() => {
@@ -32,6 +36,8 @@ export default function BestSellers() {
       });
     return () => { cancelled = true; };
   }, []);
+
+  const displayList = Array.isArray(products) && products.length > 0 ? products : fallbackProducts;
 
   return (
     <section className="py-16 bg-white">
@@ -58,24 +64,17 @@ export default function BestSellers() {
                   <div className="h-4 skeleton rounded w-3/4" />
                   <div className="h-3 skeleton rounded w-1/2" />
                   <div className="h-5 skeleton rounded w-1/3" />
-                  <div className="h-10 skeleton rounded" />
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map(product => (
+            {displayList.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
-
-        <div className="sm:hidden mt-6 text-center">
-          <Link to="/shop" className="inline-flex items-center gap-1 text-accent font-medium">
-            View All Products <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
       </div>
     </section>
   );

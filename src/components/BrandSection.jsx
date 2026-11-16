@@ -2,15 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import API from '../api/axios';
+import { mockBrands } from '../data/mockData';
 
-const fallbackBrands = [
-  { id: 1, name: 'Apple', slug: 'apple', logo: '/brands/apple.png', darkLogo: '/brands/apple-white.png' },
-  { id: 2, name: 'Samsung', slug: 'samsung', logo: '/brands/samsung-dark.png', darkLogo: '/brands/samsung-white.png' },
-  { id: 3, name: 'Google', slug: 'google', logo: '/brands/google.png' },
-  { id: 4, name: 'OnePlus', slug: 'oneplus', logo: '/brands/oneplus.png' },
-  { id: 5, name: 'Xiaomi', slug: 'xiaomi', logo: '/brands/xiaomi.png' },
-  { id: 6, name: 'Oppo', slug: 'oppo', logo: '/brands/oppo.png' },
-];
+const fallbackBrands = mockBrands;
 
 export default function BrandSection({ variant = 'logos' }) {
   const [brands, setBrands] = useState(fallbackBrands);
@@ -18,14 +12,19 @@ export default function BrandSection({ variant = 'logos' }) {
   useEffect(() => {
     API.get('/brands/')
       .then((res) => {
-        if (res.data && res.data.length > 0) {
-          setBrands(res.data);
+        const list = Array.isArray(res.data)
+          ? res.data
+          : (Array.isArray(res.data?.results) ? res.data.results : []);
+        if (list.length > 0) {
+          setBrands(list);
         }
       })
       .catch((err) => {
         console.warn('Using fallback brands:', err);
       });
   }, []);
+
+  const displayBrands = Array.isArray(brands) && brands.length > 0 ? brands : fallbackBrands;
 
   const renderBrandLogo = (brand, isCards = false) => {
     const isApple = brand.slug === 'apple' || brand.name?.toLowerCase() === 'apple';
@@ -34,111 +33,127 @@ export default function BrandSection({ variant = 'logos' }) {
 
     if (isApple) {
       return (
-        <>
+        <div className="flex items-center justify-center w-full h-full">
+          {/* Light mode: dark logo */}
           <img
             src="/brands/apple.png"
-            alt={brand.name}
-            className={`${
-              isCards ? 'max-h-11 max-w-[125px]' : 'max-h-9 sm:max-h-10 max-w-[130px]'
-            } w-auto object-contain dark:hidden opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300`}
+            alt="Apple"
+            className={`object-contain transition-all duration-300 dark:hidden ${
+              isCards ? 'max-h-7 max-w-[70px]' : 'max-h-7 max-w-[80px]'
+            }`}
           />
+          {/* Dark mode: white Apple logo */}
           <img
             src="/brands/apple-white.png"
-            alt={brand.name}
-            className={`${
-              isCards ? 'max-h-11 max-w-[125px]' : 'max-h-9 sm:max-h-10 max-w-[130px]'
-            } w-auto object-contain hidden dark:block opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]`}
+            alt="Apple"
+            className={`object-contain transition-all duration-300 hidden dark:block ${
+              isCards ? 'max-h-7 max-w-[70px]' : 'max-h-7 max-w-[80px]'
+            }`}
           />
-        </>
+        </div>
       );
     }
 
     if (isSamsung) {
       return (
-        <>
+        <div className="flex items-center justify-center w-full h-full">
+          {/* Light mode: dark/blue SAMSUNG logo */}
           <img
-            src="/brands/samsung-dark.png"
-            alt={brand.name}
-            className={`${
-              isCards ? 'max-h-8 max-w-[125px]' : 'max-h-7 sm:max-h-8 max-w-[130px]'
-            } w-auto object-contain dark:hidden opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300`}
+            src="/brands/samsung.png"
+            alt="Samsung"
+            className={`object-contain transition-all duration-300 dark:hidden ${
+              isCards ? 'max-h-6 max-w-[90px]' : 'max-h-6 max-w-[100px]'
+            }`}
           />
+          {/* Dark mode: white text SAMSUNG logo */}
           <img
             src="/brands/samsung-white.png"
-            alt={brand.name}
-            className={`${
-              isCards ? 'max-h-8 max-w-[125px]' : 'max-h-7 sm:max-h-8 max-w-[130px]'
-            } w-auto object-contain hidden dark:block opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]`}
+            alt="Samsung"
+            className={`object-contain transition-all duration-300 hidden dark:block ${
+              isCards ? 'max-h-6 max-w-[90px]' : 'max-h-6 max-w-[100px]'
+            }`}
           />
-        </>
+        </div>
       );
     }
 
     if (isSony) {
       return (
-        <>
+        <div className="flex items-center justify-center w-full h-full">
+          {/* Light mode: dark Sony logo */}
           <img
             src="/brands/sony-dark.svg"
-            alt={brand.name}
-            className={`${
-              isCards ? 'max-h-4 max-w-[125px]' : 'max-h-4 max-w-[130px]'
-            } w-auto object-contain dark:hidden opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300`}
+            alt="Sony"
+            className={`object-contain transition-all duration-300 dark:hidden ${
+              isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
+            }`}
           />
+          {/* Dark mode: pure white Sony logo */}
           <img
             src="/brands/sony-white.svg"
-            alt={brand.name}
-            className={`${
-              isCards ? 'max-h-4 max-w-[125px]' : 'max-h-4 max-w-[130px]'
-            } w-auto object-contain hidden dark:block opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 drop-shadow-[0_2px_10px_rgba(255,255,255,0.18)]`}
+            alt="Sony"
+            className={`object-contain transition-all duration-300 hidden dark:block ${
+              isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
+            }`}
           />
-        </>
+        </div>
       );
     }
 
-    if (brand.logo) {
-      return (
-        <img
-          src={brand.logo}
-          alt={brand.name}
-          className={`${
-            isCards ? 'max-h-11 max-w-[125px]' : 'max-h-9 sm:max-h-10 max-w-[130px]'
-          } w-auto object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300`}
-        />
-      );
-    }
-
+    // Default logo for Google, Xiaomi, OnePlus, etc.
     return (
-      <span className="font-bold text-base text-gray-700 dark:text-gray-200 group-hover:text-accent">
-        {brand.name}
-      </span>
+      <img
+        src={brand.logo}
+        alt={brand.name}
+        className={`object-contain filter grayscale group-hover:grayscale-0 dark:brightness-125 transition-all duration-300 ${
+          isCards ? 'max-h-7 max-w-[80px]' : 'max-h-8 max-w-[100px]'
+        }`}
+        onError={(e) => {
+          e.target.style.display = 'none';
+          e.target.nextSibling.style.display = 'block';
+        }}
+      />
     );
   };
 
   if (variant === 'cards') {
     return (
-      <section className="py-12 bg-white dark:bg-slate-900/60 transition-colors">
+      <section className="py-14 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Shop by Brand</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Choose from the top brands you love</p>
+              <span className="text-accent text-xs font-bold uppercase tracking-wider block mb-1">
+                Official Partners
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+                Authorized Brand Lineup
+              </h2>
             </div>
-            <Link to="/brands" className="text-xs sm:text-sm font-bold text-accent hover:underline flex items-center gap-1">
-              View All <ArrowRight className="w-4 h-4" />
+            <Link
+              to="/brands"
+              className="text-xs font-bold text-accent hover:underline flex items-center gap-1"
+            >
+              All Brands <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            {brands.slice(0, 6).map((brand) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {displayBrands.map((brand) => (
               <Link
                 key={brand.id}
                 to={`/brand/${brand.slug}`}
-                className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-900/90 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-accent/40 dark:hover:border-accent/40 hover:shadow-lg transition-all duration-300 group hover:-translate-y-1"
+                className="group bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center justify-between min-h-[140px]"
               >
-                <div className="w-full h-14 flex items-center justify-center mb-2 px-2">
+                <div className="w-16 h-16 rounded-xl bg-gray-50 flex items-center justify-center p-2 mb-3 group-hover:scale-105 transition-transform">
                   {renderBrandLogo(brand, true)}
+                  <span className="hidden text-xs font-bold text-gray-700">{brand.name}</span>
                 </div>
-                <span className="text-xs text-gray-500 dark:text-slate-400 font-bold group-hover:text-accent transition-colors">{brand.name}</span>
+                <div>
+                  <h4 className="font-bold text-gray-900 text-sm group-hover:text-accent transition-colors">
+                    {brand.name}
+                  </h4>
+                  <span className="text-[11px] text-gray-400 font-medium">Explore Devices →</span>
+                </div>
               </Link>
             ))}
           </div>
@@ -147,25 +162,27 @@ export default function BrandSection({ variant = 'logos' }) {
     );
   }
 
+  // Default minimalist bar variant
   return (
-    <section className="py-12 border-t border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900/60 transition-colors">
+    <section className="py-10 bg-surface border-y border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="shrink-0">
-            <h3 className="text-lg font-extrabold text-gray-900 dark:text-white">Top Brands</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Shop from the world's most trusted brands</p>
-          </div>
-          <div className="flex flex-wrap items-center gap-8 lg:gap-12 justify-around md:justify-end flex-1">
-            {brands.slice(0, 6).map((brand) => (
-              <Link
-                key={brand.id}
-                to={`/brand/${brand.slug}`}
-                className="opacity-80 hover:opacity-100 hover:scale-110 transition-all duration-200 flex items-center justify-center py-2"
-              >
-                {renderBrandLogo(brand, false)}
-              </Link>
-            ))}
-          </div>
+        <div className="text-center mb-6">
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+            Trusted by the world's leading tech innovators
+          </span>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 items-center justify-items-center">
+          {displayBrands.map((brand) => (
+            <Link
+              key={brand.id}
+              to={`/brand/${brand.slug}`}
+              className="group flex items-center justify-center h-12 w-28 opacity-70 hover:opacity-100 transition-opacity"
+              title={brand.name}
+            >
+              {renderBrandLogo(brand, false)}
+              <span className="hidden text-sm font-bold text-gray-700">{brand.name}</span>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

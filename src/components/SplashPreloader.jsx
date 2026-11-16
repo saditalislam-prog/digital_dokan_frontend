@@ -8,20 +8,27 @@ export default function SplashPreloader() {
     // Prevent scrolling while preloader is active
     document.body.style.overflow = 'hidden';
 
-    // Start exit transition after 1.4s
+    // Start exit transition after 900ms
     const exitTimer = setTimeout(() => {
       setIsExiting(true);
-    }, 1400);
+    }, 900);
 
-    // Completely remove preloader after exit fade transition (0.5s)
+    // Completely remove preloader after exit fade transition
     const finishTimer = setTimeout(() => {
       setIsLoading(false);
       document.body.style.overflow = '';
-    }, 1900);
+    }, 1300);
+
+    // Safety fallback: guaranteed cleanup even under heavy load/throttling
+    const safetyTimer = setTimeout(() => {
+      setIsLoading(false);
+      document.body.style.overflow = '';
+    }, 2000);
 
     return () => {
       clearTimeout(exitTimer);
       clearTimeout(finishTimer);
+      clearTimeout(safetyTimer);
       document.body.style.overflow = '';
     };
   }, []);
@@ -30,7 +37,7 @@ export default function SplashPreloader() {
 
   return (
     <div
-      className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-splash-grid transition-all duration-500 ease-out ${
+      className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-splash-grid transition-all duration-400 ease-out select-none ${
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
@@ -75,4 +82,3 @@ export default function SplashPreloader() {
     </div>
   );
 }
-

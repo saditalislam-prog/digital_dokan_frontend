@@ -9,14 +9,16 @@ const fallbackPosts = mockBlogPosts;
 export default function Blog() {
   const [posts, setPosts] = useState(fallbackPosts);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     API.get('/blog/')
       .then((res) => {
-        const data = res.data.results || res.data;
-        if (data && data.length > 0) {
-          setPosts(data);
+        const list = Array.isArray(res.data)
+          ? res.data
+          : (Array.isArray(res.data?.results) ? res.data.results : []);
+        if (list.length > 0) {
+          setPosts(list);
         }
       })
       .catch((err) => console.warn('Using fallback blog data:', err))
@@ -24,9 +26,10 @@ export default function Blog() {
   }, []);
 
   const categories = ['All', 'Tips', 'Tech News', 'Guide', 'Review'];
+  const postList = Array.isArray(posts) && posts.length > 0 ? posts : fallbackPosts;
   const filteredPosts = selectedCategory === 'All'
-    ? posts
-    : posts.filter((p) => (p.category || '').toLowerCase() === selectedCategory.toLowerCase());
+    ? postList
+    : postList.filter((p) => (p.category || '').toLowerCase() === selectedCategory.toLowerCase());
 
   return (
     <div className="bg-surface min-h-screen py-10">
@@ -51,10 +54,10 @@ export default function Blog() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
                 selectedCategory === cat
                   ? 'bg-accent text-white shadow-md shadow-accent/25'
-                  : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                  : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
               }`}
             >
               {cat}
@@ -62,69 +65,85 @@ export default function Blog() {
           ))}
         </div>
 
-        {/* Blog Posts Grid: Exactly 3 columns */}
-        {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm animate-pulse">
-                <div className="aspect-[16/10] bg-gray-100" />
-                <div className="p-6 space-y-3">
-                  <div className="h-4 bg-gray-100 rounded w-1/3" />
-                  <div className="h-6 bg-gray-100 rounded w-3/4" />
-                  <div className="h-4 bg-gray-100 rounded" />
+        {/* Featured Post (Hero) */}
+        {filteredPosts.length > 0 && (
+          <Link
+            to={`/blog/${filteredPosts[0].slug}`}
+            className="group block bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl transition-all duration-300"
+          >
+            <div className="grid md:grid-cols-12 gap-0">
+              <div className="md:col-span-7 aspect-[16/10] md:aspect-auto overflow-hidden bg-gray-100">
+                <img
+                  src={filteredPosts[0].image}
+                  alt={filteredPosts[0].title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="md:col-span-5 p-8 sm:p-10 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <span className="inline-block px-3 py-1 bg-accent/10 text-accent text-xs font-black uppercase tracking-wider rounded-full">
+                    {filteredPosts[0].category}
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-gray-900 group-hover:text-accent transition-colors leading-tight">
+                    {filteredPosts[0].title}
+                  </h2>
+                  <p className="text-gray-500 text-sm leading-relaxed line-clamp-3">
+                    {filteredPosts[0].excerpt}
+                  </p>
+                </div>
+                <div className="pt-6 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>{filteredPosts[0].published_at || 'Nov 12, 2026'}</span>
+                  </div>
+                  <span className="text-accent font-bold group-hover:underline flex items-center gap-1">
+                    Read Story <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
-              <Link
-                key={post.id}
-                to={`/blog/${post.slug}`}
-                className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col group hover:-translate-y-1"
-              >
-                {/* Thumbnail Image */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      e.target.src = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80';
-                    }}
-                  />
-                  {post.category && (
-                    <span className="absolute top-4 left-4 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                      {post.category}
-                    </span>
-                  )}
-                </div>
-
-                {/* Card Content */}
-                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>{new Date(post.created_at || Date.now()).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                    </div>
-                    <h2 className="font-extrabold text-gray-900 text-base sm:text-lg group-hover:text-accent transition-colors leading-snug line-clamp-2">
-                      {post.title}
-                    </h2>
-                    <p className="text-gray-500 text-xs sm:text-sm leading-relaxed line-clamp-2">
-                      {post.excerpt || post.content}
-                    </p>
-                  </div>
-
-                  <div className="pt-2 text-xs font-bold text-accent flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                    Read Full Story <ArrowRight className="w-3.5 h-3.5" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+            </div>
+          </Link>
         )}
 
+        {/* Post Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+          {filteredPosts.slice(1).map((post) => (
+            <Link
+              key={post.id}
+              to={`/blog/${post.slug}`}
+              className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+            >
+              <div className="aspect-video overflow-hidden bg-gray-100 relative">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-md text-[10px] font-black text-gray-900 px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                  {post.category}
+                </span>
+              </div>
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400 mb-2">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>{post.published_at || 'Nov 12, 2026'}</span>
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-lg group-hover:text-accent transition-colors line-clamp-2 leading-snug">
+                    {post.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                    {post.excerpt}
+                  </p>
+                </div>
+                <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-accent">
+                  <span>Read Article</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
