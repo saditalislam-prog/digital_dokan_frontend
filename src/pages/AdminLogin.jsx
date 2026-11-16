@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, Lock, User, AlertCircle, ArrowRight, ShoppingBag } from 'lucide-react';
+import { ShieldCheck, Lock, User, AlertCircle, ArrowRight, Eye, EyeOff, KeyRound, HelpCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function AdminLogin() {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const { login, user } = useAuth();
@@ -87,18 +88,57 @@ export default function AdminLogin() {
               <label className="text-xs font-bold uppercase tracking-wider text-gray-300">
                 Password
               </label>
-              <span className="text-[11px] text-accent-light">Default: admin123</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername('admin');
+                  setPassword('admin123');
+                }}
+                className="text-[11px] text-accent-light hover:underline cursor-pointer flex items-center gap-1 font-semibold"
+                title="Click to auto-fill credentials"
+              >
+                <KeyRound className="w-3 h-3" /> Auto-fill: admin123
+              </button>
             </div>
             <div className="relative">
-              <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+              <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-white/10 border border-white/20 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-accent"
+                placeholder="Enter password..."
+                className="w-full bg-white/10 border border-white/20 rounded-xl pl-10 pr-11 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-accent"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors cursor-pointer p-1"
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Forgot Password Help Helper */}
+          <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-start gap-2.5 text-xs text-gray-300">
+            <HelpCircle className="w-4 h-4 text-accent-light shrink-0 mt-0.5" />
+            <div className="space-y-1 text-[11px]">
+              <span className="font-semibold text-white block">Forgot Password? / পাসওয়ার্ড ভুলে গেছেন?</span>
+              <p className="text-gray-400">
+                Default Staff Credentials: Username <strong className="text-white">admin</strong> | Password <strong className="text-white">admin123</strong>.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername('admin');
+                  setPassword('admin123');
+                }}
+                className="text-accent-light hover:underline font-bold inline-block"
+              >
+                Click here to auto-fill & login
+              </button>
             </div>
           </div>
 

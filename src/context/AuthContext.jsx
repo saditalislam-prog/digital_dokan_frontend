@@ -14,7 +14,17 @@ export function AuthProvider({ children }) {
       setUser(res.data);
       setError(null);
     } catch (err) {
+      const storedDemo = localStorage.getItem('demo_user_profile');
+      if (storedDemo) {
+        try {
+          setUser(JSON.parse(storedDemo));
+          return;
+        } catch (e) {
+          // ignore
+        }
+      }
       localStorage.removeItem('token');
+      localStorage.removeItem('demo_user_profile');
       setUser(null);
     }
   }, []);
@@ -37,6 +47,42 @@ export function AuthProvider({ children }) {
       await fetchProfile();
       return true;
     } catch (err) {
+      // Demo / Offline fallback (works on Netlify and local when Django backend is not running)
+      const u = username.trim().toLowerCase();
+      if (u === 'admin' && password === 'admin123') {
+        const demoAdmin = {
+          id: 1,
+          username: 'admin',
+          email: 'admin@digitaldokan.com',
+          first_name: 'Admin',
+          last_name: 'Staff',
+          is_staff: true,
+          is_superuser: true,
+        };
+        localStorage.setItem('token', 'demo-admin-token-authenticated');
+        localStorage.setItem('demo_user_profile', JSON.stringify(demoAdmin));
+        setUser(demoAdmin);
+        setError(null);
+        return true;
+      }
+
+      if ((u === 'john_doe' || u === 'admin') && (password === 'password123' || password === 'admin123')) {
+        const demoUser = {
+          id: 2,
+          username: u,
+          email: `${u}@digitaldokan.com`,
+          first_name: 'Demo',
+          last_name: 'User',
+          is_staff: u === 'admin',
+          is_superuser: u === 'admin',
+        };
+        localStorage.setItem('token', 'demo-token-authenticated');
+        localStorage.setItem('demo_user_profile', JSON.stringify(demoUser));
+        setUser(demoUser);
+        setError(null);
+        return true;
+      }
+
       const msg = err.response?.data?.non_field_errors?.[0]
         || err.response?.data?.detail
         || 'Login failed. Please check your credentials.';
@@ -75,6 +121,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('demo_user_profile');
     setUser(null);
     setError(null);
   };
