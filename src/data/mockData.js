@@ -98,6 +98,36 @@ export const mockBrands = [
     "name": "Microsoft",
     "slug": "microsoft",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg"
+  },
+  {
+    "id": 9,
+    "name": "Dell",
+    "slug": "dell",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg"
+  },
+  {
+    "id": 10,
+    "name": "ASUS",
+    "slug": "asus",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg"
+  },
+  {
+    "id": 11,
+    "name": "Lenovo",
+    "slug": "lenovo",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Lenovo_logo_2015.svg"
+  },
+  {
+    "id": 12,
+    "name": "HP",
+    "slug": "hp",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg"
+  },
+  {
+    "id": 13,
+    "name": "Razer",
+    "slug": "razer",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Razer_snake_logo.svg/330px-Razer_snake_logo.svg.png"
   }
 ];
 
@@ -1464,6 +1494,594 @@ export const mockProducts = [
     "is_deal": true,
     "deal_percentage": 17,
     "created_at": "2026-10-21 16:00:00.000000"
+  },
+  {
+    "id": 35,
+    "name": "Apple MacBook Pro 16\" M3 Max",
+    "slug": "macbook-pro-16-m3-max",
+    "description": "The ultimate pro workstation. Powered by Apple M3 Max with up to 16-core CPU and 40-core GPU, stunning Liquid Retina XDR display, and up to 22 hours of battery life in Space Black.",
+    "specifications": {
+      "Display": "16.2\" Liquid Retina XDR (3456x2234) 120Hz ProMotion 1600 nits",
+      "Processor": "Apple M3 Max (16-core CPU, 40-core GPU, 16-core Neural Engine)",
+      "RAM": "48GB Unified Memory",
+      "Storage": "1TB Superfast PCIe NVMe SSD",
+      "Battery": "Up to 22 hours Apple TV movie playback, 140W USB-C Fast Charge",
+      "Weight": "2.16 kg (4.8 lbs)",
+      "Ports": "3x Thunderbolt 4, HDMI 2.1, SDXC card slot, MagSafe 3, 3.5mm jack",
+      "OS": "macOS Sonoma / Sequoia"
+    },
+    "price": 3499,
+    "old_price": 3999,
+    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 1,
+      "name": "Apple",
+      "slug": "apple",
+      "logo": "/brands/apple.png"
+    },
+    "rating": 4.9,
+    "review_count": 342,
+    "stock": 25,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 13,
+    "created_at": "2026-11-10 10:00:00.000000"
+  },
+  {
+    "id": 36,
+    "name": "Apple MacBook Pro 14\" M3 Pro",
+    "slug": "macbook-pro-14-m3-pro",
+    "description": "Incredible performance meets supreme portability. Equipped with the revolutionary Apple M3 Pro chip, studio-quality 6-speaker sound system, and extreme dynamic range.",
+    "specifications": {
+      "Display": "14.2\" Liquid Retina XDR (3024x1964) 120Hz ProMotion",
+      "Processor": "Apple M3 Pro (12-core CPU, 18-core GPU)",
+      "RAM": "18GB Unified Memory",
+      "Storage": "512GB SSD",
+      "Battery": "Up to 18 hours battery life, MagSafe 3",
+      "Weight": "1.61 kg",
+      "Ports": "3x Thunderbolt 4, HDMI, SDXC, MagSafe 3",
+      "OS": "macOS Sonoma"
+    },
+    "price": 1999,
+    "old_price": 2199,
+    "image": "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 1,
+      "name": "Apple",
+      "slug": "apple",
+      "logo": "/brands/apple.png"
+    },
+    "rating": 4.8,
+    "review_count": 280,
+    "stock": 30,
+    "is_featured": true,
+    "is_new": false,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 9,
+    "created_at": "2026-11-08 14:30:00.000000"
+  },
+  {
+    "id": 37,
+    "name": "Apple MacBook Air 15\" M3",
+    "slug": "macbook-air-15-m3",
+    "description": "Impossibly thin and blazing fast. The 15-inch MacBook Air gives you more room for what you love with a spacious Liquid Retina display, durable recycled aluminum enclosure, and all-day battery.",
+    "specifications": {
+      "Display": "15.3\" Liquid Retina LED (2880x1864) 500 nits True Tone",
+      "Processor": "Apple M3 (8-core CPU, 10-core GPU)",
+      "RAM": "16GB Unified Memory",
+      "Storage": "512GB SSD",
+      "Battery": "Up to 18 hours, MagSafe 3 charging",
+      "Weight": "1.51 kg",
+      "Design": "Fanless silent design in Midnight Black",
+      "OS": "macOS Sonoma"
+    },
+    "price": 1299,
+    "old_price": 1499,
+    "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 1,
+      "name": "Apple",
+      "slug": "apple",
+      "logo": "/brands/apple.png"
+    },
+    "rating": 4.8,
+    "review_count": 195,
+    "stock": 40,
+    "is_featured": false,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": true,
+    "deal_percentage": 13,
+    "created_at": "2026-11-05 11:20:00.000000"
+  },
+  {
+    "id": 38,
+    "name": "Dell XPS 16 (9640) OLED Flagship",
+    "slug": "dell-xps-16-9640-oled",
+    "description": "Dell's most powerful XPS ever crafted. Features a breathtaking 4K+ OLED InfinityEdge touch display, Intel Core Ultra 9 with AI acceleration, NVIDIA GeForce RTX 4070, and seamless invisible glass haptic touchpad.",
+    "specifications": {
+      "Display": "16.3\" 4K+ (3840x2400) OLED Touch 90Hz 100% DCI-P3 400 nits",
+      "Processor": "Intel Core Ultra 9 185H (16 cores, up to 5.1 GHz with Intel AI Boost NPU)",
+      "RAM": "32GB LPDDR5X 7467MHz Dual Channel",
+      "Storage": "1TB M.2 PCIe NVMe Gen4 SSD",
+      "Graphics": "NVIDIA GeForce RTX 4070 8GB GDDR6 (60W TGP)",
+      "Battery": "99.5Whr integrated battery, 130W USB-C Adapter",
+      "Weight": "2.20 kg (Platinum CNC Machined Aluminum)",
+      "OS": "Windows 11 Pro"
+    },
+    "price": 2699,
+    "old_price": 2999,
+    "image": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 9,
+      "name": "Dell",
+      "slug": "dell",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg"
+    },
+    "rating": 4.8,
+    "review_count": 164,
+    "stock": 20,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": true,
+    "deal_percentage": 10,
+    "created_at": "2026-11-12 09:15:00.000000"
+  },
+  {
+    "id": 39,
+    "name": "Dell XPS 14 (9440) Creator Ultrabook",
+    "slug": "dell-xps-14-9440-ultrabook",
+    "description": "The perfect balance of creator power and ultra-mobility. Packed with 3.2K OLED 120Hz touch panel, dedicated NVIDIA RTX 4050 graphics, and sleek zero-lattice capacitive function row.",
+    "specifications": {
+      "Display": "14.5\" 3.2K (3200x2000) 120Hz OLED InfinityEdge Touch",
+      "Processor": "Intel Core Ultra 7 155H (16 cores, up to 4.8 GHz)",
+      "RAM": "16GB LPDDR5X",
+      "Storage": "512GB PCIe Gen4 SSD",
+      "Graphics": "NVIDIA GeForce RTX 4050 6GB GDDR6",
+      "Battery": "69.5Whr ExpressCharge",
+      "Weight": "1.74 kg",
+      "OS": "Windows 11 Home"
+    },
+    "price": 1799,
+    "old_price": 1999,
+    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 9,
+      "name": "Dell",
+      "slug": "dell",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg"
+    },
+    "rating": 4.7,
+    "review_count": 132,
+    "stock": 25,
+    "is_featured": false,
+    "is_new": false,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 10,
+    "created_at": "2026-11-02 16:45:00.000000"
+  },
+  {
+    "id": 40,
+    "name": "Dell Alienware m16 R2 Gaming Beast",
+    "slug": "dell-alienware-m16-r2-gaming",
+    "description": "Engineered for pure esports triumph. Features redesigned Stealth Mode thermal architecture, ultra-fast 240Hz QHD+ display with G-SYNC, and NVIDIA RTX 4070 high-wattage power.",
+    "specifications": {
+      "Display": "16\" QHD+ (2560x1600) 240Hz 3ms 100% sRGB NVIDIA G-SYNC",
+      "Processor": "Intel Core Ultra 7 155H (16 Cores, 22 Threads)",
+      "RAM": "32GB DDR5 5600MHz",
+      "Storage": "1TB PCIe NVMe M.2 SSD",
+      "Graphics": "NVIDIA GeForce RTX 4070 8GB GDDR6 (140W Max TGP)",
+      "Thermals": "Cryo-tech cooling with dual-intake quad-exhaust fans",
+      "Keyboard": "AlienFX RGB 1-zone backlit keyboard with anti-ghosting",
+      "OS": "Windows 11 Home"
+    },
+    "price": 1899,
+    "old_price": 2199,
+    "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 9,
+      "name": "Dell",
+      "slug": "dell",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg"
+    },
+    "rating": 4.8,
+    "review_count": 210,
+    "stock": 18,
+    "is_featured": false,
+    "is_new": true,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 14,
+    "created_at": "2026-11-09 13:10:00.000000"
+  },
+  {
+    "id": 41,
+    "name": "ASUS ROG Zephyrus G16 (2026) OLED",
+    "slug": "asus-rog-zephyrus-g16-oled",
+    "description": "Precision gaming in an ultra-sleek 1.49cm aluminum chassis. Equipped with 2.5K 240Hz ROG Nebula OLED display, Slash Lighting lid, and NVIDIA GeForce RTX 4080 graphics.",
+    "specifications": {
+      "Display": "16\" 2.5K (2560x1600) 240Hz 0.2ms ROG Nebula OLED G-SYNC 500 nits",
+      "Processor": "Intel Core Ultra 9 185H with integrated AI NPU",
+      "RAM": "32GB LPDDR5X 7467MHz",
+      "Storage": "2TB PCIe 4.0 NVMe M.2 SSD",
+      "Graphics": "NVIDIA GeForce RTX 4080 12GB GDDR6 (115W TGP)",
+      "Audio": "6-speaker system with dual force-canceling woofers & Dolby Atmos",
+      "Weight": "1.85 kg CNC Aluminum Unibody in Eclipse Gray",
+      "OS": "Windows 11 Pro"
+    },
+    "price": 2499,
+    "old_price": 2799,
+    "image": "https://images.unsplash.com/photo-1544731612-de2f96026f2f?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 10,
+      "name": "ASUS",
+      "slug": "asus",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg"
+    },
+    "rating": 4.9,
+    "review_count": 255,
+    "stock": 15,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 11,
+    "created_at": "2026-11-14 17:30:00.000000"
+  },
+  {
+    "id": 42,
+    "name": "ASUS Zenbook Duo Dual-Screen OLED",
+    "slug": "asus-zenbook-duo-dual-oled",
+    "description": "The world's first laptop with two full-size 14-inch 3K 120Hz OLED touchscreens. Detachable magnetic Bluetooth keyboard, built-in kickstand, and multi-display productivity.",
+    "specifications": {
+      "Display": "Dual 14\" 3K (2880x1800) 120Hz 0.2ms Lumina OLED Touchscreens 500 nits",
+      "Processor": "Intel Core Ultra 9 185H (16 Cores, 22 Threads)",
+      "RAM": "32GB LPDDR5X",
+      "Storage": "1TB M.2 NVMe PCIe 4.0 SSD",
+      "Stylus": "ASUS Pen 2.0 with 4096 pressure levels included",
+      "Battery": "75Whr fast-charge battery (up to 13.5 hours on single screen)",
+      "Weight": "1.35 kg (without keyboard) / 1.65 kg (with keyboard)",
+      "OS": "Windows 11 Home"
+    },
+    "price": 1699,
+    "old_price": 1899,
+    "image": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 10,
+      "name": "ASUS",
+      "slug": "asus",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg"
+    },
+    "rating": 4.8,
+    "review_count": 178,
+    "stock": 22,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": true,
+    "deal_percentage": 11,
+    "created_at": "2026-11-11 15:00:00.000000"
+  },
+  {
+    "id": 43,
+    "name": "Lenovo ThinkPad X1 Carbon Gen 12",
+    "slug": "lenovo-thinkpad-x1-carbon-gen-12",
+    "description": "The gold standard of enterprise executive ultrabooks. Built with carbon fiber and magnesium, featuring a 2.8K OLED display, Communication Bar with 8MP MIPI camera, and legendary ThinkPad keyboard.",
+    "specifications": {
+      "Display": "14\" 2.8K (2880x1800) 120Hz OLED AGARAS Display, Eyesafe certified",
+      "Processor": "Intel Core Ultra 7 155H vPro Enterprise Edition",
+      "RAM": "32GB LPDDR5X 7500MHz",
+      "Storage": "1TB SSD M.2 2280 PCIe Gen4 Opal",
+      "Security": "dTPM 2.0, Match-on-Chip Fingerprint reader, IR Camera with Privacy Shutter",
+      "Weight": "1.09 kg (2.42 lbs) Ultra-lightweight",
+      "Connectivity": "Wi-Fi 7, Bluetooth 5.4, 2x Thunderbolt 4",
+      "OS": "Windows 11 Pro"
+    },
+    "price": 1849,
+    "old_price": 2149,
+    "image": "https://images.unsplash.com/photo-1588702547919-26089e690ecc?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 11,
+      "name": "Lenovo",
+      "slug": "lenovo",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Lenovo_logo_2015.svg"
+    },
+    "rating": 4.9,
+    "review_count": 310,
+    "stock": 28,
+    "is_featured": true,
+    "is_new": false,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 14,
+    "created_at": "2026-11-04 10:20:00.000000"
+  },
+  {
+    "id": 44,
+    "name": "Lenovo Legion Pro 7i Gen 9 Gaming Flagship",
+    "slug": "lenovo-legion-pro-7i-gen-9",
+    "description": "Engineered for gaming dominance. Packed with an unlocked 14th Gen Intel Core i9-14900HX, maximum power NVIDIA GeForce RTX 4090 16GB, Lenovo AI Engine+ with LA2-Q chip, and Legion ColdFront Vapor cooling.",
+    "specifications": {
+      "Display": "16\" WQXGA (2560x1600) IPS 240Hz 500 nits 100% DCI-P3 G-SYNC",
+      "Processor": "Intel Core i9-14900HX (24 cores, 32 threads, up to 5.8 GHz Turbo)",
+      "RAM": "32GB DDR5 5600MHz (expandable to 64GB)",
+      "Storage": "2TB (2x 1TB) M.2 PCIe 4.0 NVMe SSD",
+      "Graphics": "NVIDIA GeForce RTX 4090 16GB GDDR6 (175W Full TGP)",
+      "Keyboard": "Legion TrueStrike per-key RGB backlighting with 100% anti-ghosting",
+      "Battery": "99.9Whr battery with Super Rapid Charge (330W GaN adapter)",
+      "OS": "Windows 11 Home"
+    },
+    "price": 2799,
+    "old_price": 3199,
+    "image": "https://images.unsplash.com/photo-1593642634367-d91a135587b5?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 11,
+      "name": "Lenovo",
+      "slug": "lenovo",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Lenovo_logo_2015.svg"
+    },
+    "rating": 4.9,
+    "review_count": 230,
+    "stock": 14,
+    "is_featured": false,
+    "is_new": true,
+    "is_bestseller": true,
+    "is_deal": true,
+    "deal_percentage": 13,
+    "created_at": "2026-11-13 18:00:00.000000"
+  },
+  {
+    "id": 45,
+    "name": "HP Spectre x360 14 (2-in-1 OLED)",
+    "slug": "hp-spectre-x360-14-oled",
+    "description": "Elegance redefined in a gem-cut 360-degree convertible. Features a breathtaking 2.8K IMAX Enhanced OLED touch display, Intel Core Ultra 7 processor, AI auto-framing 9MP camera, and included HP tilt stylus.",
+    "specifications": {
+      "Display": "14\" 2.8K (2880x1800) 120Hz OLED Touch 500 nits HDR",
+      "Processor": "Intel Core Ultra 7 155H with Intel Arc Graphics",
+      "RAM": "32GB LPDDR5X 7467MHz",
+      "Storage": "1TB PCIe Gen4 NVMe M.2 SSD",
+      "Audio": "Poly Studio Quad speakers with DTS:X Ultra",
+      "Webcam": "9MP IR Camera with hardware privacy shutter and AI Walk Away Lock",
+      "Weight": "1.44 kg in Nightfall Black with Sandblasted Anodized Finish",
+      "OS": "Windows 11 Home"
+    },
+    "price": 1599,
+    "old_price": 1799,
+    "image": "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 12,
+      "name": "HP",
+      "slug": "hp",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg"
+    },
+    "rating": 4.8,
+    "review_count": 185,
+    "stock": 24,
+    "is_featured": true,
+    "is_new": false,
+    "is_bestseller": false,
+    "is_deal": true,
+    "deal_percentage": 11,
+    "created_at": "2026-11-06 12:40:00.000000"
+  },
+  {
+    "id": 46,
+    "name": "Microsoft Surface Laptop 7 (Copilot+ PC)",
+    "slug": "microsoft-surface-laptop-7-copilot",
+    "description": "The AI-first PC era has arrived. Powered by the groundbreaking Qualcomm Snapdragon X Elite with 45 TOPS NPU, vibrant PixelSense Flow 120Hz touchscreen, and up to an extraordinary 22 hours of battery life.",
+    "specifications": {
+      "Display": "13.8\" PixelSense Flow (2304x1536) 120Hz Touch 600 nits HDR",
+      "Processor": "Qualcomm Snapdragon X Elite (12 cores, 45 TOPS Hexagon NPU)",
+      "RAM": "16GB LPDDR5X",
+      "Storage": "512GB Removable Gen4 SSD",
+      "Battery": "Up to 22 hours local video playback",
+      "AI Features": "Recall, Live Captions, Cocreator, Windows Studio Effects",
+      "Weight": "1.34 kg in Platinum Anodized Aluminum",
+      "OS": "Windows 11 Copilot+ Edition"
+    },
+    "price": 1399,
+    "old_price": 1599,
+    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 8,
+      "name": "Microsoft",
+      "slug": "microsoft",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg"
+    },
+    "rating": 4.7,
+    "review_count": 140,
+    "stock": 35,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": true,
+    "deal_percentage": 13,
+    "created_at": "2026-11-14 09:00:00.000000"
+  },
+  {
+    "id": 47,
+    "name": "Razer Blade 16 (2026) OLED Gaming Titan",
+    "slug": "razer-blade-16-oled-rtx4090",
+    "description": "The ultimate gaming desktop replacement in a compact 0.87-inch unibody. Equipped with the world's first 240Hz 16-inch OLED display, Intel Core i9-14900HX, and flagship NVIDIA RTX 4090 16GB graphics.",
+    "specifications": {
+      "Display": "16\" QHD+ (2560x1600) 240Hz 0.2ms Calman-Verified OLED 100% DCI-P3",
+      "Processor": "Intel Core i9-14900HX (24 Cores, 32 Threads, up to 5.8 GHz)",
+      "RAM": "32GB DDR5 5600MHz",
+      "Storage": "2TB PCIe 4.0 NVMe SSD",
+      "Graphics": "NVIDIA GeForce RTX 4090 16GB GDDR6 (175W Full TGP)",
+      "Build": "CNC Milled T6 Aircraft Grade Aluminum with Anti-Fingerprint Anodization",
+      "Cooling": "Patented Vapor Chamber with dual 44-blade fans",
+      "OS": "Windows 11 Home"
+    },
+    "price": 3599,
+    "old_price": 3999,
+    "image": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 13,
+      "name": "Razer",
+      "slug": "razer",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Razer_snake_logo.svg/330px-Razer_snake_logo.svg.png"
+    },
+    "rating": 4.9,
+    "review_count": 198,
+    "stock": 10,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": true,
+    "deal_percentage": 10,
+    "created_at": "2026-11-15 16:20:00.000000"
+  },
+  {
+    "id": 48,
+    "name": "Samsung Galaxy Book4 Ultra (RTX 4070)",
+    "slug": "samsung-galaxy-book4-ultra",
+    "description": "Samsung's most intelligent PC yet. Features an anti-reflective 3K Dynamic AMOLED 2X touch screen, Intel Core Ultra 9 with Galaxy AI, NVIDIA RTX 4070, and seamless Phone Link integration with Galaxy devices.",
+    "specifications": {
+      "Display": "16\" 3K (2880x1800) Dynamic AMOLED 2X 120Hz Anti-Reflective Touchscreen",
+      "Processor": "Intel Core Ultra 9 185H with Galaxy AI Acceleration",
+      "RAM": "32GB LPDDR5X",
+      "Storage": "1TB NVMe PCIe Gen4 SSD",
+      "Graphics": "NVIDIA GeForce RTX 4070 8GB GDDR6",
+      "Audio": "AKG Quad Speakers (Woofer Max 5W x 2, Tweeter 2W x 2) with Dolby Atmos",
+      "Weight": "1.86 kg in Moonstone Gray",
+      "OS": "Windows 11 Pro"
+    },
+    "price": 2399,
+    "old_price": 2699,
+    "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+    "category": {
+      "id": 3,
+      "name": "Laptops",
+      "slug": "laptops",
+      "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+      "icon": "FaLaptop",
+      "description": "Powerful laptops for creators and professionals"
+    },
+    "brand": {
+      "id": 2,
+      "name": "Samsung",
+      "slug": "samsung",
+      "logo": "/brands/samsung.png"
+    },
+    "rating": 4.8,
+    "review_count": 165,
+    "stock": 20,
+    "is_featured": true,
+    "is_new": true,
+    "is_bestseller": false,
+    "is_deal": true,
+    "deal_percentage": 11,
+    "created_at": "2026-11-15 12:00:00.000000"
   }
 ];
 
