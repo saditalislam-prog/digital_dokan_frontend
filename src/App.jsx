@@ -6,6 +6,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import LiveChat from './components/LiveChat';
 import SplashPreloader from './components/SplashPreloader';
 
 // Pages
@@ -59,6 +60,7 @@ function App() {
                   </Routes>
                 </main>
                 <ScrollToTop />
+                <LiveChat />
                 <Footer />
               </div>
             </CartProvider>
