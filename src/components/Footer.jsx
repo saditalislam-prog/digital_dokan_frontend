@@ -155,7 +155,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-sm text-gray-500">
-            © 2024 Digital Dokan. All rights reserved.
+            © {new Date().getFullYear() || 2026} Digital Dokan. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-sm text-gray-500">
             <a href="#" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
