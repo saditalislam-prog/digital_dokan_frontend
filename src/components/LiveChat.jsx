@@ -74,6 +74,23 @@ export default function LiveChat() {
     setInputMessage('');
     setIsTyping(true);
 
+    // Save inquiry to localStorage so store admin can review in Admin Dashboard
+    try {
+      const existingInquiries = JSON.parse(localStorage.getItem('digital_dokan_customer_inquiries') || '[]');
+      const newInquiry = {
+        id: `inq_${Date.now()}`,
+        user: user ? (user.username || user.email || 'Registered Customer') : 'Website Visitor #' + Math.floor(1000 + Math.random() * 9000),
+        message: text,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        status: 'New',
+        phone: user?.phone || '+880 1700-000000'
+      };
+      localStorage.setItem('digital_dokan_customer_inquiries', JSON.stringify([newInquiry, ...existingInquiries.slice(0, 49)]));
+    } catch (e) {
+      console.warn('Could not save customer inquiry:', e);
+    }
+
     // Simulate smart agent response
     setTimeout(() => {
       const botResponse = generateBotResponse(text);

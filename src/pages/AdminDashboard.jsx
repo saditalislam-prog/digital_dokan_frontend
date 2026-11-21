@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Layers, Award, FileText, Star,
   Plus, Edit2, Trash2, Search, ArrowLeft, LogOut, CheckCircle,
-  X, AlertTriangle, RefreshCw, Sun, Moon
+  X, AlertTriangle, RefreshCw, Sun, Moon, MessageCircle, Check, ExternalLink
 } from 'lucide-react';
 import API from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -22,6 +22,7 @@ export default function AdminDashboard() {
   const [brands, setBrands] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -107,12 +108,14 @@ export default function AdminDashboard() {
       setBlogs(mockBlogPosts);
     } finally {
       setLoading(false);
+      loadInquiries();
     }
   };
 
   useEffect(() => {
     if (user && (user.is_staff || user.is_superuser)) {
       loadAllData();
+      loadInquiries();
     }
   }, [user]);
 
@@ -367,19 +370,71 @@ export default function AdminDashboard() {
     }
   };
 
-  // ── Review Delete ────────────────────────────────
-  const handleDeleteReview = async (id) => {
-    if (!window.confirm('Delete this review?')) return;
+  // ── Live Chat Inquiries Handlers ──────────────────
+  const loadInquiries = () => {
     try {
-      await API.delete(`/reviews/${id}/delete/`).catch(() => {
-        setReviews(prev => prev.filter(r => r.id !== id));
-      });
-      showToast('Review deleted');
-      loadAllData();
-    } catch (err) {
-      setReviews(prev => prev.filter(r => r.id !== id));
-      showToast('Review deleted');
+      const stored = localStorage.getItem('digital_dokan_customer_inquiries');
+      if (stored) {
+        setInquiries(JSON.parse(stored));
+      } else {
+        const defaultInqs = [
+          {
+            id: 'inq_1',
+            user: 'Rahim Ahmed (Visitor #4821)',
+            message: 'Is the ASUS ROG Zephyrus G16 with RTX 4080 available for immediate delivery in Dhanmondi?',
+            time: '09:15 PM',
+            date: 'Today',
+            status: 'New',
+            phone: '+880 1712-345678'
+          },
+          {
+            id: 'inq_2',
+            user: 'Tariqul Islam',
+            message: 'Can I pay via bKash on delivery for the MacBook Pro 16" M3 Max?',
+            time: '08:40 PM',
+            date: 'Today',
+            status: 'Resolved',
+            phone: '+880 1819-876543'
+          },
+          {
+            id: 'inq_3',
+            user: 'Sadia Rahman',
+            message: 'What is the warranty policy for Dell XPS 16? Does it include official international warranty?',
+            time: '07:22 PM',
+            date: 'Yesterday',
+            status: 'New',
+            phone: '+880 1911-223344'
+          }
+        ];
+        setInquiries(defaultInqs);
+        localStorage.setItem('digital_dokan_customer_inquiries', JSON.stringify(defaultInqs));
+      }
+    } catch {
+      setInquiries([]);
     }
+  };
+
+  const handleToggleInquiryStatus = (id) => {
+    const updated = inquiries.map((inq) =>
+      inq.id === id ? { ...inq, status: inq.status === 'Resolved' ? 'New' : 'Resolved' } : inq
+    );
+    setInquiries(updated);
+    localStorage.setItem('digital_dokan_customer_inquiries', JSON.stringify(updated));
+    showToast('Inquiry status updated!');
+  };
+
+  const handleDeleteInquiry = (id) => {
+    const updated = inquiries.filter((inq) => inq.id !== id);
+    setInquiries(updated);
+    localStorage.setItem('digital_dokan_customer_inquiries', JSON.stringify(updated));
+    showToast('Inquiry removed');
+  };
+
+  const handleClearAllInquiries = () => {
+    if (!window.confirm('Clear all customer inquiries?')) return;
+    setInquiries([]);
+    localStorage.setItem('digital_dokan_customer_inquiries', JSON.stringify([]));
+    showToast('All inquiries cleared');
   };
 
   const filteredProducts = products.filter((p) =>
@@ -551,6 +606,23 @@ export default function AdminDashboard() {
               {reviews.length}
             </span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('inquiries')}
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer ${
+              activeTab === 'inquiries'
+                ? 'bg-accent text-white shadow-md'
+                : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/80 dark:hover:text-slate-200'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <MessageCircle className="w-4 h-4" />
+              <span>Live Inquiries</span>
+            </div>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${activeTab === 'inquiries' ? 'bg-white/20' : 'bg-emerald-500/15 text-emerald-500 font-bold'}`}>
+              {inquiries.length}
+            </span>
+          </button>
         </aside>
 
         {/* Content Area */}
@@ -667,6 +739,125 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ── TAB 7: LIVE INQUIRIES & CHATS ── */}
+          {activeTab === 'inquiries' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                    Live Chat Customer Inquiries
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                      Live
+                    </span>
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                    Incoming customer inquiries and messages submitted through the website Live Chat widget.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadInquiries}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-[#10192d] hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    title="Refresh inquiries"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Refresh
+                  </button>
+                  {inquiries.length > 0 && (
+                    <button
+                      onClick={handleClearAllInquiries}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Inquiries Cards */}
+              {inquiries.length === 0 ? (
+                <div className="bg-white dark:bg-[#10192d] rounded-3xl border border-gray-200 dark:border-slate-800/80 p-12 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 dark:text-white text-base">No Customer Inquiries Yet</h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto">
+                    When visitors type questions in the Live Chat widget on the storefront, their questions will immediately appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {inquiries.map((inq) => (
+                    <div
+                      key={inq.id}
+                      className="bg-white dark:bg-[#10192d] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-5 shadow-sm space-y-3 transition-colors"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 dark:border-slate-800/60 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-xs">
+                            {inq.user?.[0] || 'C'}
+                          </div>
+                          <div>
+                            <span className="font-bold text-sm text-gray-900 dark:text-white block">{inq.user}</span>
+                            <span className="text-[11px] text-gray-400 dark:text-slate-500 flex items-center gap-2">
+                              <span>{inq.date} • {inq.time}</span>
+                              {inq.phone && <span>• 📞 {inq.phone}</span>}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                              inq.status === 'Resolved'
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            }`}
+                          >
+                            {inq.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Customer Message */}
+                      <div className="bg-slate-50/70 dark:bg-[#0c1322] p-3.5 rounded-xl border border-gray-100 dark:border-slate-800/60 text-xs text-gray-800 dark:text-slate-200 leading-relaxed">
+                        <p className="font-medium">"{inq.message}"</p>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`https://wa.me/8801700000000?text=${encodeURIComponent(`Hello ${inq.user}, regarding your inquiry on Digital Dokan: "${inq.message}"`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" /> Reply on WhatsApp
+                          </a>
+                          <button
+                            onClick={() => handleToggleInquiryStatus(inq.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                          >
+                            <Check className="w-3.5 h-3.5 text-accent" />
+                            {inq.status === 'Resolved' ? 'Mark as New' : 'Mark as Resolved'}
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => handleDeleteInquiry(inq.id)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                          title="Delete inquiry"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── TAB 2: PRODUCTS MANAGER ── */}
           {activeTab === 'products' && (
             <div className="space-y-6">
@@ -778,6 +969,125 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ── TAB 7: LIVE INQUIRIES & CHATS ── */}
+          {activeTab === 'inquiries' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                    Live Chat Customer Inquiries
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                      Live
+                    </span>
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                    Incoming customer inquiries and messages submitted through the website Live Chat widget.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadInquiries}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-[#10192d] hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    title="Refresh inquiries"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Refresh
+                  </button>
+                  {inquiries.length > 0 && (
+                    <button
+                      onClick={handleClearAllInquiries}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Inquiries Cards */}
+              {inquiries.length === 0 ? (
+                <div className="bg-white dark:bg-[#10192d] rounded-3xl border border-gray-200 dark:border-slate-800/80 p-12 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 dark:text-white text-base">No Customer Inquiries Yet</h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto">
+                    When visitors type questions in the Live Chat widget on the storefront, their questions will immediately appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {inquiries.map((inq) => (
+                    <div
+                      key={inq.id}
+                      className="bg-white dark:bg-[#10192d] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-5 shadow-sm space-y-3 transition-colors"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 dark:border-slate-800/60 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-xs">
+                            {inq.user?.[0] || 'C'}
+                          </div>
+                          <div>
+                            <span className="font-bold text-sm text-gray-900 dark:text-white block">{inq.user}</span>
+                            <span className="text-[11px] text-gray-400 dark:text-slate-500 flex items-center gap-2">
+                              <span>{inq.date} • {inq.time}</span>
+                              {inq.phone && <span>• 📞 {inq.phone}</span>}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                              inq.status === 'Resolved'
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            }`}
+                          >
+                            {inq.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Customer Message */}
+                      <div className="bg-slate-50/70 dark:bg-[#0c1322] p-3.5 rounded-xl border border-gray-100 dark:border-slate-800/60 text-xs text-gray-800 dark:text-slate-200 leading-relaxed">
+                        <p className="font-medium">"{inq.message}"</p>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`https://wa.me/8801700000000?text=${encodeURIComponent(`Hello ${inq.user}, regarding your inquiry on Digital Dokan: "${inq.message}"`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" /> Reply on WhatsApp
+                          </a>
+                          <button
+                            onClick={() => handleToggleInquiryStatus(inq.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                          >
+                            <Check className="w-3.5 h-3.5 text-accent" />
+                            {inq.status === 'Resolved' ? 'Mark as New' : 'Mark as Resolved'}
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => handleDeleteInquiry(inq.id)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                          title="Delete inquiry"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── TAB 3: CATEGORIES MANAGER ── */}
           {activeTab === 'categories' && (
             <div className="space-y-6">
@@ -820,6 +1130,125 @@ export default function AdminDashboard() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* ── TAB 7: LIVE INQUIRIES & CHATS ── */}
+          {activeTab === 'inquiries' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                    Live Chat Customer Inquiries
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                      Live
+                    </span>
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                    Incoming customer inquiries and messages submitted through the website Live Chat widget.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadInquiries}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-[#10192d] hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    title="Refresh inquiries"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Refresh
+                  </button>
+                  {inquiries.length > 0 && (
+                    <button
+                      onClick={handleClearAllInquiries}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Inquiries Cards */}
+              {inquiries.length === 0 ? (
+                <div className="bg-white dark:bg-[#10192d] rounded-3xl border border-gray-200 dark:border-slate-800/80 p-12 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 dark:text-white text-base">No Customer Inquiries Yet</h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto">
+                    When visitors type questions in the Live Chat widget on the storefront, their questions will immediately appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {inquiries.map((inq) => (
+                    <div
+                      key={inq.id}
+                      className="bg-white dark:bg-[#10192d] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-5 shadow-sm space-y-3 transition-colors"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 dark:border-slate-800/60 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-xs">
+                            {inq.user?.[0] || 'C'}
+                          </div>
+                          <div>
+                            <span className="font-bold text-sm text-gray-900 dark:text-white block">{inq.user}</span>
+                            <span className="text-[11px] text-gray-400 dark:text-slate-500 flex items-center gap-2">
+                              <span>{inq.date} • {inq.time}</span>
+                              {inq.phone && <span>• 📞 {inq.phone}</span>}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                              inq.status === 'Resolved'
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            }`}
+                          >
+                            {inq.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Customer Message */}
+                      <div className="bg-slate-50/70 dark:bg-[#0c1322] p-3.5 rounded-xl border border-gray-100 dark:border-slate-800/60 text-xs text-gray-800 dark:text-slate-200 leading-relaxed">
+                        <p className="font-medium">"{inq.message}"</p>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`https://wa.me/8801700000000?text=${encodeURIComponent(`Hello ${inq.user}, regarding your inquiry on Digital Dokan: "${inq.message}"`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" /> Reply on WhatsApp
+                          </a>
+                          <button
+                            onClick={() => handleToggleInquiryStatus(inq.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                          >
+                            <Check className="w-3.5 h-3.5 text-accent" />
+                            {inq.status === 'Resolved' ? 'Mark as New' : 'Mark as Resolved'}
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => handleDeleteInquiry(inq.id)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                          title="Delete inquiry"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -866,6 +1295,125 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ── TAB 7: LIVE INQUIRIES & CHATS ── */}
+          {activeTab === 'inquiries' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                    Live Chat Customer Inquiries
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                      Live
+                    </span>
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                    Incoming customer inquiries and messages submitted through the website Live Chat widget.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadInquiries}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-[#10192d] hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    title="Refresh inquiries"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Refresh
+                  </button>
+                  {inquiries.length > 0 && (
+                    <button
+                      onClick={handleClearAllInquiries}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Inquiries Cards */}
+              {inquiries.length === 0 ? (
+                <div className="bg-white dark:bg-[#10192d] rounded-3xl border border-gray-200 dark:border-slate-800/80 p-12 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 dark:text-white text-base">No Customer Inquiries Yet</h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto">
+                    When visitors type questions in the Live Chat widget on the storefront, their questions will immediately appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {inquiries.map((inq) => (
+                    <div
+                      key={inq.id}
+                      className="bg-white dark:bg-[#10192d] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-5 shadow-sm space-y-3 transition-colors"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 dark:border-slate-800/60 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-xs">
+                            {inq.user?.[0] || 'C'}
+                          </div>
+                          <div>
+                            <span className="font-bold text-sm text-gray-900 dark:text-white block">{inq.user}</span>
+                            <span className="text-[11px] text-gray-400 dark:text-slate-500 flex items-center gap-2">
+                              <span>{inq.date} • {inq.time}</span>
+                              {inq.phone && <span>• 📞 {inq.phone}</span>}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                              inq.status === 'Resolved'
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            }`}
+                          >
+                            {inq.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Customer Message */}
+                      <div className="bg-slate-50/70 dark:bg-[#0c1322] p-3.5 rounded-xl border border-gray-100 dark:border-slate-800/60 text-xs text-gray-800 dark:text-slate-200 leading-relaxed">
+                        <p className="font-medium">"{inq.message}"</p>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`https://wa.me/8801700000000?text=${encodeURIComponent(`Hello ${inq.user}, regarding your inquiry on Digital Dokan: "${inq.message}"`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" /> Reply on WhatsApp
+                          </a>
+                          <button
+                            onClick={() => handleToggleInquiryStatus(inq.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                          >
+                            <Check className="w-3.5 h-3.5 text-accent" />
+                            {inq.status === 'Resolved' ? 'Mark as New' : 'Mark as Resolved'}
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => handleDeleteInquiry(inq.id)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                          title="Delete inquiry"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── TAB 5: BLOG MANAGER ── */}
           {activeTab === 'blogs' && (
             <div className="space-y-6">
@@ -904,6 +1452,125 @@ export default function AdminDashboard() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* ── TAB 7: LIVE INQUIRIES & CHATS ── */}
+          {activeTab === 'inquiries' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                    Live Chat Customer Inquiries
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                      Live
+                    </span>
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                    Incoming customer inquiries and messages submitted through the website Live Chat widget.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadInquiries}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-[#10192d] hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    title="Refresh inquiries"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Refresh
+                  </button>
+                  {inquiries.length > 0 && (
+                    <button
+                      onClick={handleClearAllInquiries}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Inquiries Cards */}
+              {inquiries.length === 0 ? (
+                <div className="bg-white dark:bg-[#10192d] rounded-3xl border border-gray-200 dark:border-slate-800/80 p-12 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 dark:text-white text-base">No Customer Inquiries Yet</h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto">
+                    When visitors type questions in the Live Chat widget on the storefront, their questions will immediately appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {inquiries.map((inq) => (
+                    <div
+                      key={inq.id}
+                      className="bg-white dark:bg-[#10192d] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-5 shadow-sm space-y-3 transition-colors"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 dark:border-slate-800/60 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-xs">
+                            {inq.user?.[0] || 'C'}
+                          </div>
+                          <div>
+                            <span className="font-bold text-sm text-gray-900 dark:text-white block">{inq.user}</span>
+                            <span className="text-[11px] text-gray-400 dark:text-slate-500 flex items-center gap-2">
+                              <span>{inq.date} • {inq.time}</span>
+                              {inq.phone && <span>• 📞 {inq.phone}</span>}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                              inq.status === 'Resolved'
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            }`}
+                          >
+                            {inq.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Customer Message */}
+                      <div className="bg-slate-50/70 dark:bg-[#0c1322] p-3.5 rounded-xl border border-gray-100 dark:border-slate-800/60 text-xs text-gray-800 dark:text-slate-200 leading-relaxed">
+                        <p className="font-medium">"{inq.message}"</p>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`https://wa.me/8801700000000?text=${encodeURIComponent(`Hello ${inq.user}, regarding your inquiry on Digital Dokan: "${inq.message}"`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" /> Reply on WhatsApp
+                          </a>
+                          <button
+                            onClick={() => handleToggleInquiryStatus(inq.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                          >
+                            <Check className="w-3.5 h-3.5 text-accent" />
+                            {inq.status === 'Resolved' ? 'Mark as New' : 'Mark as Resolved'}
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => handleDeleteInquiry(inq.id)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                          title="Delete inquiry"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -947,6 +1614,125 @@ export default function AdminDashboard() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {/* ── TAB 7: LIVE INQUIRIES & CHATS ── */}
+          {activeTab === 'inquiries' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                    Live Chat Customer Inquiries
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                      Live
+                    </span>
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                    Incoming customer inquiries and messages submitted through the website Live Chat widget.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadInquiries}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-[#10192d] hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    title="Refresh inquiries"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Refresh
+                  </button>
+                  {inquiries.length > 0 && (
+                    <button
+                      onClick={handleClearAllInquiries}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Inquiries Cards */}
+              {inquiries.length === 0 ? (
+                <div className="bg-white dark:bg-[#10192d] rounded-3xl border border-gray-200 dark:border-slate-800/80 p-12 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 dark:text-white text-base">No Customer Inquiries Yet</h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto">
+                    When visitors type questions in the Live Chat widget on the storefront, their questions will immediately appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {inquiries.map((inq) => (
+                    <div
+                      key={inq.id}
+                      className="bg-white dark:bg-[#10192d] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-5 shadow-sm space-y-3 transition-colors"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 dark:border-slate-800/60 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-xs">
+                            {inq.user?.[0] || 'C'}
+                          </div>
+                          <div>
+                            <span className="font-bold text-sm text-gray-900 dark:text-white block">{inq.user}</span>
+                            <span className="text-[11px] text-gray-400 dark:text-slate-500 flex items-center gap-2">
+                              <span>{inq.date} • {inq.time}</span>
+                              {inq.phone && <span>• 📞 {inq.phone}</span>}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                              inq.status === 'Resolved'
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            }`}
+                          >
+                            {inq.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Customer Message */}
+                      <div className="bg-slate-50/70 dark:bg-[#0c1322] p-3.5 rounded-xl border border-gray-100 dark:border-slate-800/60 text-xs text-gray-800 dark:text-slate-200 leading-relaxed">
+                        <p className="font-medium">"{inq.message}"</p>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`https://wa.me/8801700000000?text=${encodeURIComponent(`Hello ${inq.user}, regarding your inquiry on Digital Dokan: "${inq.message}"`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" /> Reply on WhatsApp
+                          </a>
+                          <button
+                            onClick={() => handleToggleInquiryStatus(inq.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                          >
+                            <Check className="w-3.5 h-3.5 text-accent" />
+                            {inq.status === 'Resolved' ? 'Mark as New' : 'Mark as Resolved'}
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => handleDeleteInquiry(inq.id)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                          title="Delete inquiry"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </main>

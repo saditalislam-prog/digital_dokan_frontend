@@ -109,7 +109,7 @@ export const mockBrands = [
     "id": 10,
     "name": "ASUS",
     "slug": "asus",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg"
+    "logo": "/brands/asus-white.svg"
   },
   {
     "id": 11,
@@ -1764,7 +1764,7 @@ export const mockProducts = [
     },
     "price": 2499,
     "old_price": 2799,
-    "image": "https://images.unsplash.com/photo-1544731612-de2f96026f2f?w=800&auto=format&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1618424181497-157f25b6ddd5?w=800&auto=format&fit=crop&q=80",
     "category": {
       "id": 3,
       "name": "Laptops",
@@ -1777,7 +1777,7 @@ export const mockProducts = [
       "id": 10,
       "name": "ASUS",
       "slug": "asus",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg"
+      "logo": "/brands/asus-white.svg"
     },
     "rating": 4.9,
     "review_count": 255,
@@ -1819,7 +1819,7 @@ export const mockProducts = [
       "id": 10,
       "name": "ASUS",
       "slug": "asus",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg"
+      "logo": "/brands/asus-white.svg"
     },
     "rating": 4.8,
     "review_count": 178,

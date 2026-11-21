@@ -30,6 +30,7 @@ export default function BrandSection({ variant = 'logos' }) {
     const isApple = brand.slug === 'apple' || brand.name?.toLowerCase() === 'apple';
     const isSamsung = brand.slug === 'samsung' || brand.name?.toLowerCase() === 'samsung';
     const isSony = brand.slug === 'sony' || brand.name?.toLowerCase() === 'sony';
+    const isAsus = brand.slug === 'asus' || brand.name?.toLowerCase() === 'asus';
 
     if (isApple) {
       return (
@@ -93,6 +94,29 @@ export default function BrandSection({ variant = 'logos' }) {
             src="/brands/sony-white.svg"
             alt="Sony"
             className={`object-contain transition-all duration-300 hidden dark:block ${
+              isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
+            }`}
+          />
+        </div>
+      );
+    }
+
+    if (isAsus) {
+      return (
+        <div className="flex items-center justify-center w-full h-full">
+          {/* Light mode: dark ASUS logo */}
+          <img
+            src="/brands/asus-dark.svg"
+            alt="ASUS"
+            className={`object-contain transition-all duration-300 dark:hidden ${
+              isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
+            }`}
+          />
+          {/* Dark mode: pure white ASUS logo */}
+          <img
+            src="/brands/asus-white.svg"
+            alt="ASUS"
+            className={`object-contain transition-all duration-300 hidden dark:block drop-shadow-[0_2px_8px_rgba(255,255,255,0.18)] ${
               isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
             }`}
           />

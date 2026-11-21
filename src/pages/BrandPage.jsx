@@ -273,6 +273,19 @@ export default function BrandPage() {
                                   className="max-h-4 max-w-full object-contain hidden dark:block drop-shadow-[0_2px_8px_rgba(255,255,255,0.18)]"
                                 />
                               </>
+                            ) : brand.slug === 'asus' ? (
+                              <>
+                                <img
+                                  src="/brands/asus-dark.svg"
+                                  alt={brand.name}
+                                  className="max-h-5 max-w-full object-contain dark:hidden"
+                                />
+                                <img
+                                  src="/brands/asus-white.svg"
+                                  alt={brand.name}
+                                  className="max-h-5 max-w-full object-contain hidden dark:block drop-shadow-[0_2px_8px_rgba(255,255,255,0.18)]"
+                                />
+                              </>
                             ) : brand.logo ? (
                               <img
                                 src={brand.logo}
@@ -441,6 +454,19 @@ export default function BrandPage() {
                           src="/brands/sony-white.svg"
                           alt="Sony"
                           className="max-h-7 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
+                        />
+                      </>
+                    ) : currentSlug === 'asus' ? (
+                      <>
+                        <img
+                          src="/brands/asus-dark.svg"
+                          alt="ASUS"
+                          className="max-h-8 max-w-[180px] w-auto object-contain dark:hidden"
+                        />
+                        <img
+                          src="/brands/asus-white.svg"
+                          alt="ASUS"
+                          className="max-h-8 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
                         />
                       </>
                     ) : (
