@@ -4,6 +4,28 @@ import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, CheckCircle2
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
+const REGIONS = [
+  'Dhaka',
+  'Chattogram',
+  'Rajshahi',
+  'Khulna',
+  'Sylhet',
+  'Barishal',
+  'Rangpur',
+  'Mymensingh'
+];
+
+const REGION_CITIES = {
+  Dhaka: ['Dhaka City', 'Gazipur', 'Narayanganj', 'Savar', 'Tangail', 'Narsingdi', 'Manikganj', 'Munshiganj', 'Faridpur', 'Kishoreganj', 'Gopalganj'],
+  Chattogram: ['Chattogram City', 'Cumilla', 'Cox\'s Bazar', 'Feni', 'Brahmanbaria', 'Noakhali', 'Chandpur', 'Rangamati', 'Bandarban', 'Khagrachhari'],
+  Sylhet: ['Sylhet City', 'Moulvibazar', 'Habiganj', 'Sunamganj'],
+  Rajshahi: ['Rajshahi City', 'Bogura', 'Pabna', 'Sirajganj', 'Naogaon', 'Natore', 'Chapai Nawabganj', 'Joypurhat'],
+  Khulna: ['Khulna City', 'Jashore', 'Kushtia', 'Satkhira', 'Bagerhat', 'Jhenaidah', 'Chuadanga', 'Magura', 'Narail', 'Meherpur'],
+  Barishal: ['Barishal City', 'Patuakhali', 'Bhola', 'Pirojpur', 'Jhalokati', 'Barguna'],
+  Rangpur: ['Rangpur City', 'Dinajpur', 'Gaibandha', 'Kurigram', 'Saidpur', 'Nilphamari', 'Thakurgaon', 'Panchagarh', 'Lalmonirhat'],
+  Mymensingh: ['Mymensingh City', 'Jamalpur', 'Netrokona', 'Sherpur']
+};
+
 export default function Cart() {
   const { cartItems, cartCount, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart();
   const { user } = useAuth();
@@ -13,6 +35,8 @@ export default function Cart() {
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [customerName, setCustomerName] = useState(user?.username || '');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [customerRegion, setCustomerRegion] = useState('Dhaka');
+  const [customerCity, setCustomerCity] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState('');
@@ -36,16 +60,25 @@ export default function Cart() {
       alert('Please fill out delivery address and phone number!');
       return;
     }
+    if (!customerRegion || !customerCity) {
+      alert('Please select or specify your Region and City!');
+      return;
+    }
 
     const genId = `DD-${Math.floor(10000 + Math.random() * 90000)}`;
     setPlacedOrderId(genId);
+
+    const fullDeliveryAddress = `${customerAddress}, ${customerCity}, ${customerRegion}`;
 
     const newOrder = {
       id: genId,
       trackingId: genId,
       customerName,
       customerPhone,
-      customerAddress,
+      customerRegion,
+      customerCity,
+      customerAddress: fullDeliveryAddress,
+      streetAddress: customerAddress,
       status: 'confirmed',
       statusStep: 1,
       paymentMethod: 'Cash on Delivery',
@@ -99,7 +132,12 @@ export default function Cart() {
 
     try {
       const existingOrders = JSON.parse(localStorage.getItem('digital_dokan_orders') || '[]');
-      localStorage.setItem('digital_dokan_orders', JSON.stringify([newOrder, ...existingOrders]));
+      const updatedOrders = [newOrder, ...existingOrders];
+      localStorage.setItem('digital_dokan_orders', JSON.stringify(updatedOrders));
+
+      // Dispatch event for real-time admin sync
+      window.dispatchEvent(new CustomEvent('digital_dokan_new_order', { detail: newOrder }));
+      window.dispatchEvent(new Event('storage'));
     } catch (err) {
       console.warn('Failed to save order to localStorage', err);
     }
@@ -308,15 +346,15 @@ export default function Cart() {
 
       {/* Checkout Modal */}
       {orderModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-gray-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#10192d] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-gray-100 dark:border-slate-800 text-gray-900 dark:text-white">
             {orderPlaced ? (
               <div className="text-center py-6 space-y-4">
-                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Order Confirmed!</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Order Confirmed!</h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">
                   Thank you for shopping with <strong>Digital Dokan</strong>! Your order of{' '}
                   <span className="font-bold text-accent">${finalTotal.toFixed(2)}</span> has been placed.
                   Our representative will contact you at <strong>{customerPhone}</strong> for delivery verification.
@@ -324,14 +362,14 @@ export default function Cart() {
 
                 {/* Tracking ID Highlight */}
                 {placedOrderId && (
-                  <div className="bg-surface p-4 rounded-2xl border border-gray-100 text-center space-y-1">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                  <div className="bg-surface dark:bg-[#0c1322] p-4 rounded-2xl border border-gray-100 dark:border-slate-800 text-center space-y-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500">
                       Your Order Tracking ID
                     </span>
                     <div className="text-2xl font-black text-accent tracking-wider font-mono">
                       {placedOrderId}
                     </div>
-                    <p className="text-[11px] text-gray-500">
+                    <p className="text-[11px] text-gray-500 dark:text-slate-400">
                       Keep this ID to check real-time courier and delivery status.
                     </p>
                   </div>
@@ -349,7 +387,7 @@ export default function Cart() {
                       setOrderModalOpen(false);
                       setOrderPlaced(false);
                     }}
-                    className="w-full py-2.5 bg-surface hover:bg-gray-100 text-gray-600 font-semibold rounded-xl text-xs transition-colors"
+                    className="w-full py-2.5 bg-surface dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-600 dark:text-slate-300 font-semibold rounded-xl text-xs transition-colors cursor-pointer"
                   >
                     Continue Shopping
                   </button>
@@ -357,68 +395,113 @@ export default function Cart() {
               </div>
             ) : (
               <form onSubmit={handlePlaceOrder} className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-                  <h3 className="text-lg font-bold text-gray-900">Checkout (Cash on Delivery)</h3>
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-slate-800">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Checkout (Cash on Delivery)</h3>
                   <button
                     type="button"
                     onClick={() => setOrderModalOpen(false)}
-                    className="text-gray-400 hover:text-gray-600 text-sm font-semibold"
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-white text-sm font-semibold cursor-pointer"
                   >
                     ✕
                   </button>
                 </div>
 
-                <div className="bg-surface p-3 rounded-xl text-xs space-y-1 text-gray-600">
+                <div className="bg-surface dark:bg-[#0c1322] p-3.5 rounded-xl text-xs space-y-1.5 text-gray-600 dark:text-slate-400 border border-gray-100 dark:border-slate-800/60">
                   <div className="flex justify-between">
                     <span>Order Total:</span>
-                    <span className="font-bold text-gray-900">${finalTotal.toFixed(2)}</span>
+                    <span className="font-bold text-gray-900 dark:text-white">${finalTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Payment Method:</span>
-                    <span className="font-semibold text-emerald-600">Cash on Delivery (No Card Needed)</span>
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">Cash on Delivery (No Card Needed)</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-gray-700 block mb-1">Full Name</label>
+                  <label className="text-xs font-bold text-gray-700 dark:text-slate-300 block mb-1">Full Name</label>
                   <input
                     type="text"
                     required
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="Your Full Name"
-                    className="w-full text-sm bg-surface border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-accent"
+                    className="w-full text-sm bg-surface dark:bg-[#0c1322] border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl px-3.5 py-2.5 outline-none focus:border-accent"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-gray-700 block mb-1">Phone Number</label>
+                  <label className="text-xs font-bold text-gray-700 dark:text-slate-300 block mb-1">Phone Number</label>
                   <input
                     type="tel"
                     required
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
                     placeholder="+880 1XXXXXXXXX"
-                    className="w-full text-sm bg-surface border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-accent"
+                    className="w-full text-sm bg-surface dark:bg-[#0c1322] border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl px-3.5 py-2.5 outline-none focus:border-accent"
                   />
                 </div>
 
+                {/* Region & City Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-gray-700 dark:text-slate-300 block mb-1">
+                      Region / Division <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      required
+                      value={customerRegion}
+                      onChange={(e) => {
+                        setCustomerRegion(e.target.value);
+                        setCustomerCity('');
+                      }}
+                      className="w-full text-sm bg-surface dark:bg-[#0c1322] border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl px-3.5 py-2.5 outline-none focus:border-accent cursor-pointer transition-colors"
+                    >
+                      <option value="">Select Region</option>
+                      {REGIONS.map((r) => (
+                        <option key={r} value={r} className="bg-white dark:bg-[#10192d] text-gray-900 dark:text-white">
+                          {r}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-gray-700 dark:text-slate-300 block mb-1">
+                      City / District <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      list="checkout-city-list"
+                      value={customerCity}
+                      onChange={(e) => setCustomerCity(e.target.value)}
+                      placeholder={customerRegion ? `City in ${customerRegion}` : 'Select or type City'}
+                      className="w-full text-sm bg-surface dark:bg-[#0c1322] border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl px-3.5 py-2.5 outline-none focus:border-accent placeholder-gray-400 dark:placeholder-slate-500 transition-colors"
+                    />
+                    <datalist id="checkout-city-list">
+                      {customerRegion && REGION_CITIES[customerRegion]
+                        ? REGION_CITIES[customerRegion].map((c) => <option key={c} value={c} />)
+                        : Object.values(REGION_CITIES).flat().map((c) => <option key={c} value={c} />)}
+                    </datalist>
+                  </div>
+                </div>
+
                 <div>
-                  <label className="text-xs font-bold text-gray-700 block mb-1">Delivery Address</label>
+                  <label className="text-xs font-bold text-gray-700 dark:text-slate-300 block mb-1">Delivery Address</label>
                   <textarea
-                    rows={3}
+                    rows={2}
                     required
                     value={customerAddress}
                     onChange={(e) => setCustomerAddress(e.target.value)}
-                    placeholder="House / Street, Area, City, Postcode"
-                    className="w-full text-sm bg-surface border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-accent"
+                    placeholder="House / Flat / Road, Area, Landmark"
+                    className="w-full text-sm bg-surface dark:bg-[#0c1322] border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl px-3.5 py-2.5 outline-none focus:border-accent placeholder-gray-400 dark:placeholder-slate-500"
                   />
                 </div>
 
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full py-3.5 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl shadow-lg transition-colors"
+                    className="w-full py-3.5 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl shadow-lg transition-colors cursor-pointer"
                   >
                     Confirm Order (${finalTotal.toFixed(2)})
                   </button>

@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import API from '../api/axios';
 import { mockBrands } from '../data/mockData';
+import { useTheme } from '../context/ThemeContext';
 
 const fallbackBrands = mockBrands;
 
 export default function BrandSection({ variant = 'logos' }) {
+  const { isDark } = useTheme();
   const [brands, setBrands] = useState(fallbackBrands);
 
   useEffect(() => {
@@ -35,19 +37,10 @@ export default function BrandSection({ variant = 'logos' }) {
     if (isApple) {
       return (
         <div className="flex items-center justify-center w-full h-full">
-          {/* Light mode: dark logo */}
           <img
-            src="/brands/apple.png"
+            src={isDark ? "/brands/apple-white.png" : "/brands/apple.png"}
             alt="Apple"
-            className={`object-contain transition-all duration-300 dark:hidden ${
-              isCards ? 'max-h-7 max-w-[70px]' : 'max-h-7 max-w-[80px]'
-            }`}
-          />
-          {/* Dark mode: white Apple logo */}
-          <img
-            src="/brands/apple-white.png"
-            alt="Apple"
-            className={`object-contain transition-all duration-300 hidden dark:block ${
+            className={`object-contain transition-all duration-300 ${
               isCards ? 'max-h-7 max-w-[70px]' : 'max-h-7 max-w-[80px]'
             }`}
           />
@@ -58,19 +51,10 @@ export default function BrandSection({ variant = 'logos' }) {
     if (isSamsung) {
       return (
         <div className="flex items-center justify-center w-full h-full">
-          {/* Light mode: dark/blue SAMSUNG logo */}
           <img
-            src="/brands/samsung.png"
+            src={isDark ? "/brands/samsung-white.png" : "/brands/samsung.png"}
             alt="Samsung"
-            className={`object-contain transition-all duration-300 dark:hidden ${
-              isCards ? 'max-h-6 max-w-[90px]' : 'max-h-6 max-w-[100px]'
-            }`}
-          />
-          {/* Dark mode: white text SAMSUNG logo */}
-          <img
-            src="/brands/samsung-white.png"
-            alt="Samsung"
-            className={`object-contain transition-all duration-300 hidden dark:block ${
+            className={`object-contain transition-all duration-300 ${
               isCards ? 'max-h-6 max-w-[90px]' : 'max-h-6 max-w-[100px]'
             }`}
           />
@@ -81,19 +65,10 @@ export default function BrandSection({ variant = 'logos' }) {
     if (isSony) {
       return (
         <div className="flex items-center justify-center w-full h-full">
-          {/* Light mode: dark Sony logo */}
           <img
-            src="/brands/sony-dark.svg"
+            src={isDark ? "/brands/sony-white.svg" : "/brands/sony-dark.svg"}
             alt="Sony"
-            className={`object-contain transition-all duration-300 dark:hidden ${
-              isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
-            }`}
-          />
-          {/* Dark mode: pure white Sony logo */}
-          <img
-            src="/brands/sony-white.svg"
-            alt="Sony"
-            className={`object-contain transition-all duration-300 hidden dark:block ${
+            className={`object-contain transition-all duration-300 ${
               isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
             }`}
           />
@@ -104,19 +79,10 @@ export default function BrandSection({ variant = 'logos' }) {
     if (isAsus) {
       return (
         <div className="flex items-center justify-center w-full h-full">
-          {/* Light mode: dark ASUS logo */}
           <img
-            src="/brands/asus-dark.svg"
+            src={isDark ? "/brands/asus-white.svg" : "/brands/asus-dark.svg"}
             alt="ASUS"
-            className={`object-contain transition-all duration-300 dark:hidden ${
-              isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
-            }`}
-          />
-          {/* Dark mode: pure white ASUS logo */}
-          <img
-            src="/brands/asus-white.svg"
-            alt="ASUS"
-            className={`object-contain transition-all duration-300 hidden dark:block drop-shadow-[0_2px_8px_rgba(255,255,255,0.18)] ${
+            className={`object-contain transition-all duration-300 ${
               isCards ? 'max-h-5 max-w-[75px]' : 'max-h-5 max-w-[85px]'
             }`}
           />

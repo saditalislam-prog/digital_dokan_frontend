@@ -4,6 +4,7 @@ import API from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import { ChevronRight, ShieldCheck, Sparkles, Award, ArrowRight, Layers, CheckCircle2 } from 'lucide-react';
 import { mockProducts, mockBrands } from '../data/mockData';
+import { useTheme } from '../context/ThemeContext';
 
 const brandMeta = {
   apple: {
@@ -57,6 +58,7 @@ const brandMeta = {
 };
 
 export default function BrandPage() {
+  const { isDark } = useTheme();
   const { slug } = useParams();
   const currentSlug = slug || 'all';
   const isDirectoryView = currentSlug === 'all';
@@ -235,57 +237,29 @@ export default function BrandPage() {
                         <div className="flex items-start justify-between mb-5">
                           <div className="w-16 h-16 bg-surface dark:bg-slate-950/70 rounded-2xl p-2.5 flex items-center justify-center border border-gray-100 dark:border-slate-800 shadow-inner group-hover:scale-105 transition-transform">
                             {brand.slug === 'apple' ? (
-                              <>
-                                <img
-                                  src="/brands/apple.png"
-                                  alt={brand.name}
-                                  className="max-h-10 max-w-full object-contain dark:hidden"
-                                />
-                                <img
-                                  src="/brands/apple-white.png"
-                                  alt={brand.name}
-                                  className="max-h-10 max-w-full object-contain hidden dark:block"
-                                />
-                              </>
+                              <img
+                                src={isDark ? "/brands/apple-white.png" : "/brands/apple.png"}
+                                alt={brand.name}
+                                className="max-h-10 max-w-full object-contain"
+                              />
                             ) : brand.slug === 'samsung' ? (
-                              <>
-                                <img
-                                  src="/brands/samsung-dark.png"
-                                  alt={brand.name}
-                                  className="max-h-7 max-w-full object-contain dark:hidden"
-                                />
-                                <img
-                                  src="/brands/samsung-white.png"
-                                  alt={brand.name}
-                                  className="max-h-7 max-w-full object-contain hidden dark:block"
-                                />
-                              </>
+                              <img
+                                src={isDark ? "/brands/samsung-white.png" : "/brands/samsung-dark.png"}
+                                alt={brand.name}
+                                className="max-h-7 max-w-full object-contain"
+                              />
                             ) : brand.slug === 'sony' ? (
-                              <>
-                                <img
-                                  src="/brands/sony-dark.svg"
-                                  alt={brand.name}
-                                  className="max-h-4 max-w-full object-contain dark:hidden"
-                                />
-                                <img
-                                  src="/brands/sony-white.svg"
-                                  alt={brand.name}
-                                  className="max-h-4 max-w-full object-contain hidden dark:block drop-shadow-[0_2px_8px_rgba(255,255,255,0.18)]"
-                                />
-                              </>
+                              <img
+                                src={isDark ? "/brands/sony-white.svg" : "/brands/sony-dark.svg"}
+                                alt={brand.name}
+                                className="max-h-4 max-w-full object-contain"
+                              />
                             ) : brand.slug === 'asus' ? (
-                              <>
-                                <img
-                                  src="/brands/asus-dark.svg"
-                                  alt={brand.name}
-                                  className="max-h-5 max-w-full object-contain dark:hidden"
-                                />
-                                <img
-                                  src="/brands/asus-white.svg"
-                                  alt={brand.name}
-                                  className="max-h-5 max-w-full object-contain hidden dark:block drop-shadow-[0_2px_8px_rgba(255,255,255,0.18)]"
-                                />
-                              </>
+                              <img
+                                src={isDark ? "/brands/asus-white.svg" : "/brands/asus-dark.svg"}
+                                alt={brand.name}
+                                className="max-h-5 max-w-full object-contain"
+                              />
                             ) : brand.logo ? (
                               <img
                                 src={brand.logo}
@@ -418,57 +392,29 @@ export default function BrandPage() {
                 {brands.find((b) => b.slug === currentSlug)?.logo && (
                   <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-md p-6 rounded-3xl shadow-xl shrink-0 self-start md:self-center flex items-center justify-center border border-white/20 dark:border-slate-800">
                     {currentSlug === 'apple' ? (
-                      <>
-                        <img
-                          src="/brands/apple.png"
-                          alt="Apple"
-                          className="max-h-16 max-w-[180px] w-auto object-contain dark:hidden"
-                        />
-                        <img
-                          src="/brands/apple-white.png"
-                          alt="Apple"
-                          className="max-h-16 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
-                        />
-                      </>
+                      <img
+                        src={isDark ? "/brands/apple-white.png" : "/brands/apple.png"}
+                        alt="Apple"
+                        className="max-h-16 max-w-[180px] w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
+                      />
                     ) : currentSlug === 'samsung' ? (
-                      <>
-                        <img
-                          src="/brands/samsung-dark.png"
-                          alt="Samsung"
-                          className="max-h-10 max-w-[180px] w-auto object-contain dark:hidden"
-                        />
-                        <img
-                          src="/brands/samsung-white.png"
-                          alt="Samsung"
-                          className="max-h-10 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
-                        />
-                      </>
+                      <img
+                        src={isDark ? "/brands/samsung-white.png" : "/brands/samsung-dark.png"}
+                        alt="Samsung"
+                        className="max-h-10 max-w-[180px] w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
+                      />
                     ) : currentSlug === 'sony' ? (
-                      <>
-                        <img
-                          src="/brands/sony-dark.svg"
-                          alt="Sony"
-                          className="max-h-7 max-w-[180px] w-auto object-contain dark:hidden"
-                        />
-                        <img
-                          src="/brands/sony-white.svg"
-                          alt="Sony"
-                          className="max-h-7 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
-                        />
-                      </>
+                      <img
+                        src={isDark ? "/brands/sony-white.svg" : "/brands/sony-dark.svg"}
+                        alt="Sony"
+                        className="max-h-7 max-w-[180px] w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
+                      />
                     ) : currentSlug === 'asus' ? (
-                      <>
-                        <img
-                          src="/brands/asus-dark.svg"
-                          alt="ASUS"
-                          className="max-h-8 max-w-[180px] w-auto object-contain dark:hidden"
-                        />
-                        <img
-                          src="/brands/asus-white.svg"
-                          alt="ASUS"
-                          className="max-h-8 max-w-[180px] w-auto object-contain hidden dark:block drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
-                        />
-                      </>
+                      <img
+                        src={isDark ? "/brands/asus-white.svg" : "/brands/asus-dark.svg"}
+                        alt="ASUS"
+                        className="max-h-8 max-w-[180px] w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
+                      />
                     ) : (
                       <img
                         src={brands.find((b) => b.slug === currentSlug)?.logo}

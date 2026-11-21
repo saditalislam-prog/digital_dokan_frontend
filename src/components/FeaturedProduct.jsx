@@ -147,9 +147,17 @@ export default function FeaturedProduct() {
                 style={{ backgroundColor: activeFinish.glow }}
               />
 
-              {/* Concentric Halo Tech Ring */}
-              <div className="absolute w-64 sm:w-80 h-64 sm:h-80 rounded-full border border-white/20 dark:border-white/10 pointer-events-none animate-spin" style={{ animationDuration: '30s' }} />
-              <div className="absolute w-80 sm:w-96 h-80 sm:h-96 rounded-full border border-dashed border-accent/20 pointer-events-none" />
+              {/* Concentric Halo Tech Rings (Animated Tech Radar & Dotted Orbit Lines) */}
+              <div className="absolute w-96 sm:w-[460px] h-96 sm:h-[460px] rounded-full border border-accent/20 dark:border-accent/30 pointer-events-none animate-radar-pulse" />
+              <div className="absolute w-80 sm:w-[410px] h-80 sm:h-[410px] rounded-full border-2 border-dashed border-accent/40 dark:border-accent/50 pointer-events-none animate-spin-reverse" />
+              <div className="absolute w-64 sm:w-80 h-64 sm:h-80 rounded-full border border-white/30 dark:border-white/20 pointer-events-none animate-spin-slow" />
+              <div
+                className="absolute w-72 sm:w-[350px] h-72 sm:h-[350px] rounded-full border border-dotted border-purple-400/35 dark:border-purple-300/25 pointer-events-none animate-spin"
+                style={{ animationDuration: '45s' }}
+              >
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-accent shadow-[0_0_10px_#3b82f6]" />
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-pink-400 shadow-[0_0_8px_#f472b6]" />
+              </div>
 
               {/* Main 3D Phone Mockup Container */}
               <div className="relative z-10 w-[240px] sm:w-[268px] transition-transform duration-500 hover:scale-105 hover:-translate-y-2">
@@ -219,11 +227,11 @@ export default function FeaturedProduct() {
 
                       {/* Screen Bottom Controls */}
                       <div className="flex items-center justify-between px-3 pb-2 z-10">
-                        <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 text-white/80">
-                          <Sparkles className="w-4 h-4 text-amber-300" />
+                        <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 text-white/80 hover:scale-110 transition-transform">
+                          <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
                         </div>
-                        <div className="w-28 h-1 bg-white/40 rounded-full" />
-                        <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 text-white/80">
+                        <div className="w-28 h-1 bg-white/50 rounded-full animate-home-bar" />
+                        <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 text-white/80 hover:scale-110 transition-transform">
                           <Camera className="w-4 h-4 text-white" />
                         </div>
                       </div>

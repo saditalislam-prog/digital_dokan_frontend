@@ -55,13 +55,13 @@ export const mockBrands = [
     "id": 1,
     "name": "Apple",
     "slug": "apple",
-    "logo": "/brands/apple.png"
+    "logo": "/brands/apple-white.svg"
   },
   {
     "id": 2,
     "name": "Samsung",
     "slug": "samsung",
-    "logo": "/brands/samsung.png"
+    "logo": "/brands/samsung-white.svg"
   },
   {
     "id": 3,
@@ -1764,7 +1764,7 @@ export const mockProducts = [
     },
     "price": 2499,
     "old_price": 2799,
-    "image": "https://images.unsplash.com/photo-1618424181497-157f25b6ddd5?w=800&auto=format&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop&q=80",
     "category": {
       "id": 3,
       "name": "Laptops",

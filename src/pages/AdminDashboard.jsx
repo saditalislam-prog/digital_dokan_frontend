@@ -3,12 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Layers, Award, FileText, Star,
   Plus, Edit2, Trash2, Search, ArrowLeft, LogOut, CheckCircle,
-  X, AlertTriangle, RefreshCw, Sun, Moon, MessageCircle, Check, ExternalLink
+  X, AlertTriangle, RefreshCw, Sun, Moon, MessageCircle, Check, ExternalLink,
+  ShoppingBag, Eye, Phone, MapPin, Truck, Calendar, DollarSign, CheckCircle2, Clock, XCircle
 } from 'lucide-react';
 import API from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { mockCategories, mockBrands, mockProducts, mockBlogPosts } from '../data/mockData';
+import { mockCategories, mockBrands, mockProducts, mockBlogPosts, sampleOrders } from '../data/mockData';
 
 export default function AdminDashboard() {
   const { user, logout, loading: authLoading } = useAuth();
@@ -23,6 +24,10 @@ export default function AdminDashboard() {
   const [blogs, setBlogs] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [inquiries, setInquiries] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
+  const [orderStatusFilter, setOrderStatusFilter] = useState('all');
+  const [orderSearchQuery, setOrderSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -116,12 +121,14 @@ export default function AdminDashboard() {
     if (user && (user.is_staff || user.is_superuser)) {
       loadAllData();
       loadInquiries();
+      loadOrders();
     }
   }, [user]);
 
-  // Real-time synchronization for customer live chat inquiries
+  // Real-time synchronization for customer live chat inquiries & orders
   useEffect(() => {
     loadInquiries();
+    loadOrders();
 
     const handleNewInquiry = (e) => {
       loadInquiries();
@@ -130,22 +137,35 @@ export default function AdminDashboard() {
       }
     };
 
+    const handleNewOrder = (e) => {
+      loadOrders();
+      if (e?.detail) {
+        showToast(`🛍️ New Order Placed: #${e.detail.id} by ${e.detail.customerName} ($${Number(e.detail.total || 0).toFixed(2)})`);
+      }
+    };
+
     const handleStorageChange = (e) => {
       if (!e.key || e.key === 'digital_dokan_customer_inquiries') {
         loadInquiries();
       }
+      if (!e.key || e.key === 'digital_dokan_orders') {
+        loadOrders();
+      }
     };
 
     window.addEventListener('digital_dokan_new_inquiry', handleNewInquiry);
+    window.addEventListener('digital_dokan_new_order', handleNewOrder);
     window.addEventListener('storage', handleStorageChange);
 
     // Auto-poll every 2 seconds while admin dashboard is open
     const pollInterval = setInterval(() => {
       loadInquiries();
+      loadOrders();
     }, 2000);
 
     return () => {
       window.removeEventListener('digital_dokan_new_inquiry', handleNewInquiry);
+      window.removeEventListener('digital_dokan_new_order', handleNewOrder);
       window.removeEventListener('storage', handleStorageChange);
       clearInterval(pollInterval);
     };
@@ -473,6 +493,98 @@ export default function AdminDashboard() {
     showToast('All inquiries cleared');
   };
 
+  // ── Customer Orders Handlers ──────────────────────
+  const loadOrders = () => {
+    try {
+      const stored = localStorage.getItem('digital_dokan_orders');
+      if (stored !== null) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setOrders(parsed);
+          return;
+        }
+      }
+      setOrders(sampleOrders || []);
+      localStorage.setItem('digital_dokan_orders', JSON.stringify(sampleOrders || []));
+    } catch {
+      setOrders(sampleOrders || []);
+    }
+  };
+
+  const handleUpdateOrderStatus = (orderId, newStatus) => {
+    const stepMap = {
+      confirmed: 1,
+      processing: 2,
+      shipped: 3,
+      out_for_delivery: 4,
+      delivered: 5,
+      cancelled: 0,
+    };
+    const titleMap = {
+      confirmed: 'Order Confirmed',
+      processing: 'Processing & Quality Check',
+      shipped: 'Handed Over to Courier',
+      out_for_delivery: 'Out for Delivery',
+      delivered: 'Delivered Successfully',
+      cancelled: 'Order Cancelled',
+    };
+
+    const updated = orders.map((o) => {
+      if (o.id === orderId) {
+        const newTimeline = [
+          ...(o.timeline || []),
+          {
+            title: titleMap[newStatus] || newStatus,
+            date: 'Just now',
+            description: `Order status updated to ${newStatus} by Store Admin.`,
+            completed: true,
+            current: true,
+          },
+        ];
+        return {
+          ...o,
+          status: newStatus,
+          statusStep: stepMap[newStatus] ?? o.statusStep,
+          timeline: newTimeline,
+        };
+      }
+      return o;
+    });
+
+    setOrders(updated);
+    localStorage.setItem('digital_dokan_orders', JSON.stringify(updated));
+    showToast(`Order #${orderId} updated to ${newStatus.replace(/_/g, ' ')}!`);
+
+    if (selectedOrderDetails && selectedOrderDetails.id === orderId) {
+      setSelectedOrderDetails(updated.find((o) => o.id === orderId));
+    }
+  };
+
+  const handleDeleteOrder = (orderId) => {
+    if (!window.confirm(`Delete order #${orderId}?`)) return;
+    const updated = orders.filter((o) => o.id !== orderId);
+    setOrders(updated);
+    localStorage.setItem('digital_dokan_orders', JSON.stringify(updated));
+    showToast(`Order #${orderId} deleted`);
+
+    if (selectedOrderDetails && selectedOrderDetails.id === orderId) {
+      setSelectedOrderDetails(null);
+    }
+  };
+
+  const filteredOrders = orders.filter((o) => {
+    const matchesStatus = orderStatusFilter === 'all' || o.status === orderStatusFilter;
+    const q = orderSearchQuery.toLowerCase();
+    const matchesSearch =
+      !q ||
+      o.id?.toLowerCase().includes(q) ||
+      o.customerName?.toLowerCase().includes(q) ||
+      o.customerPhone?.toLowerCase().includes(q) ||
+      o.customerCity?.toLowerCase().includes(q) ||
+      o.customerAddress?.toLowerCase().includes(q);
+    return matchesStatus && matchesSearch;
+  });
+
   const filteredProducts = products.filter((p) =>
     (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     (p.category?.name || p.category || '').toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -556,6 +668,28 @@ export default function AdminDashboard() {
           >
             <LayoutDashboard className="w-4 h-4" />
             <span>Overview</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab('orders');
+              loadOrders();
+            }}
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer ${
+              activeTab === 'orders'
+                ? 'bg-accent text-white shadow-md'
+                : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/80 dark:hover:text-slate-200'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <ShoppingBag className="w-4 h-4" />
+              <span>Orders</span>
+            </div>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${
+              activeTab === 'orders' ? 'bg-white/20' : 'bg-emerald-500/15 text-emerald-500 font-bold'
+            }`}>
+              {orders.length}
+            </span>
           </button>
 
           <button
@@ -677,18 +811,37 @@ export default function AdminDashboard() {
               </div>
 
               {/* Stats Cards */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-                <div className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-colors">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div 
+                  onClick={() => setActiveTab('orders')}
+                  className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-all hover:scale-[1.02] cursor-pointer"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                    <ShoppingBag className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-gray-400 dark:text-slate-400 font-semibold block">Total Orders</span>
+                    <span className="text-2xl font-black text-gray-900 dark:text-white">{orders.length}</span>
+                  </div>
+                </div>
+
+                <div 
+                  onClick={() => setActiveTab('products')}
+                  className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-all hover:scale-[1.02] cursor-pointer"
+                >
                   <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-accent dark:text-blue-400 flex items-center justify-center font-bold">
                     <Package className="w-6 h-6" />
                   </div>
                   <div>
-                    <span className="text-xs text-gray-400 dark:text-slate-400 font-semibold block">Total Products</span>
+                    <span className="text-xs text-gray-400 dark:text-slate-400 font-semibold block">Products</span>
                     <span className="text-2xl font-black text-gray-900 dark:text-white">{stats?.total_products || products.length}</span>
                   </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-colors">
+                <div 
+                  onClick={() => setActiveTab('categories')}
+                  className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-all hover:scale-[1.02] cursor-pointer"
+                >
                   <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
                     <Layers className="w-6 h-6" />
                   </div>
@@ -698,22 +851,28 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-colors">
+                <div 
+                  onClick={() => setActiveTab('brands')}
+                  className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-all hover:scale-[1.02] cursor-pointer"
+                >
                   <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
                     <Award className="w-6 h-6" />
                   </div>
                   <div>
-                    <span className="text-xs text-gray-400 dark:text-slate-400 font-semibold block">Active Brands</span>
+                    <span className="text-xs text-gray-400 dark:text-slate-400 font-semibold block">Brands</span>
                     <span className="text-2xl font-black text-gray-900 dark:text-white">{stats?.total_brands || brands.length}</span>
                   </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-colors">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                <div 
+                  onClick={() => setActiveTab('reviews')}
+                  className="bg-white dark:bg-[#10192d] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center gap-4 transition-all hover:scale-[1.02] cursor-pointer col-span-2 sm:col-span-1"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-500 flex items-center justify-center font-bold">
                     <Star className="w-6 h-6" />
                   </div>
                   <div>
-                    <span className="text-xs text-gray-400 dark:text-slate-400 font-semibold block">Total Reviews</span>
+                    <span className="text-xs text-gray-400 dark:text-slate-400 font-semibold block">Reviews</span>
                     <span className="text-2xl font-black text-gray-900 dark:text-white">{stats?.total_reviews || reviews.length}</span>
                   </div>
                 </div>
@@ -1211,8 +1370,386 @@ export default function AdminDashboard() {
               )}
             </div>
           )}
+
+          {/* ── TAB 8: ORDERS MANAGEMENT ── */}
+          {activeTab === 'orders' && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                    Customer Orders & Fulfillment
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                      Live
+                    </span>
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                    Manage incoming Cash on Delivery orders, courier dispatching, and delivery status updates.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadOrders}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-[#10192d] hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    title="Refresh orders"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Refresh
+                  </button>
+                </div>
+              </div>
+
+              {/* Order Stats Quick Summary */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="bg-white dark:bg-[#10192d] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-xs">
+                  <span className="text-[11px] font-bold text-gray-400 dark:text-slate-400 block">Total Orders</span>
+                  <span className="text-xl font-black text-gray-900 dark:text-white mt-1 block">{orders.length}</span>
+                </div>
+                <div className="bg-white dark:bg-[#10192d] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-xs">
+                  <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 block">Total Sales</span>
+                  <span className="text-xl font-black text-gray-900 dark:text-white mt-1 block">
+                    ${orders.reduce((sum, o) => sum + Number(o.total || 0), 0).toFixed(2)}
+                  </span>
+                </div>
+                <div className="bg-white dark:bg-[#10192d] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-xs">
+                  <span className="text-[11px] font-bold text-amber-500 block">Pending / Out</span>
+                  <span className="text-xl font-black text-gray-900 dark:text-white mt-1 block">
+                    {orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length}
+                  </span>
+                </div>
+                <div className="bg-white dark:bg-[#10192d] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-xs">
+                  <span className="text-[11px] font-bold text-blue-500 block">Delivered</span>
+                  <span className="text-xl font-black text-gray-900 dark:text-white mt-1 block">
+                    {orders.filter(o => o.status === 'delivered').length}
+                  </span>
+                </div>
+              </div>
+
+              {/* Filters & Search */}
+              <div className="bg-white dark:bg-[#10192d] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
+                  {['all', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].map((st) => (
+                    <button
+                      key={st}
+                      onClick={() => setOrderStatusFilter(st)}
+                      className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                        orderStatusFilter === st
+                          ? 'bg-accent text-white shadow-xs'
+                          : 'text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      {st === 'all' ? 'All Orders' : st.replace(/_/g, ' ').toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="relative w-full md:w-64">
+                  <input
+                    type="text"
+                    value={orderSearchQuery}
+                    onChange={(e) => setOrderSearchQuery(e.target.value)}
+                    placeholder="Search by ID, name, city..."
+                    className="w-full bg-slate-50 dark:bg-[#0c1322] border border-gray-200 dark:border-slate-700 rounded-xl pl-9 pr-4 py-2 text-xs text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 outline-none focus:border-accent"
+                  />
+                  <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-2.5" />
+                </div>
+              </div>
+
+              {/* Orders Table */}
+              {filteredOrders.length === 0 ? (
+                <div className="bg-white dark:bg-[#10192d] rounded-3xl border border-gray-200 dark:border-slate-800/80 p-12 text-center space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                    <ShoppingBag className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 dark:text-white text-base">No Orders Found</h3>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
+                      When customers place orders at checkout, their orders will appear here immediately in real-time.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setOrders(sampleOrders);
+                      localStorage.setItem('digital_dokan_orders', JSON.stringify(sampleOrders));
+                      showToast('Sample orders loaded!');
+                    }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent hover:bg-accent-dark text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer mx-auto"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Load Sample Orders
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-white dark:bg-[#10192d] rounded-3xl border border-gray-200 dark:border-slate-800/80 overflow-hidden shadow-sm">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-gray-50 dark:bg-[#0c1322] text-gray-600 dark:text-slate-300 uppercase tracking-wider font-semibold border-b border-gray-200 dark:border-slate-800">
+                        <tr>
+                          <th className="p-4">Order ID & Date</th>
+                          <th className="p-4">Customer & Contact</th>
+                          <th className="p-4">Region & City</th>
+                          <th className="p-4">Items</th>
+                          <th className="p-4">Total & Payment</th>
+                          <th className="p-4">Status</th>
+                          <th className="p-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 dark:divide-slate-800/80">
+                        {filteredOrders.map((ord) => {
+                          const statusColors = {
+                            confirmed: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20',
+                            processing: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
+                            shipped: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20',
+                            out_for_delivery: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20',
+                            delivered: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
+                            cancelled: 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20',
+                          };
+
+                          return (
+                            <tr key={ord.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                              {/* Order ID & Date */}
+                              <td className="p-4 font-medium">
+                                <span className="font-mono font-bold text-accent dark:text-accent-light block text-sm">
+                                  #{ord.id}
+                                </span>
+                                <span className="text-[11px] text-gray-400 dark:text-slate-500 block mt-0.5">
+                                  {ord.orderDate}
+                                </span>
+                              </td>
+
+                              {/* Customer & Contact */}
+                              <td className="p-4">
+                                <span className="font-bold text-gray-900 dark:text-white block">
+                                  {ord.customerName}
+                                </span>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className="text-[11px] text-gray-500 dark:text-slate-400 font-mono">
+                                    {ord.customerPhone}
+                                  </span>
+                                  {ord.customerPhone && (
+                                    <a
+                                      href={`https://wa.me/${ord.customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hello ${ord.customerName}, regarding your Digital Dokan Order #${ord.id}:`)}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="p-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                                      title="Chat on WhatsApp"
+                                    >
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  )}
+                                </div>
+                              </td>
+
+                              {/* Destination */}
+                              <td className="p-4">
+                                <span className="font-semibold text-gray-800 dark:text-slate-200 block">
+                                  {ord.customerCity || 'N/A'}{ord.customerRegion ? `, ${ord.customerRegion}` : ''}
+                                </span>
+                                <span className="text-[11px] text-gray-400 dark:text-slate-500 block max-w-xs truncate mt-0.5">
+                                  {ord.streetAddress || ord.customerAddress || 'Address on file'}
+                                </span>
+                              </td>
+
+                              {/* Items */}
+                              <td className="p-4">
+                                <div className="flex items-center gap-1.5">
+                                  {ord.items?.slice(0, 3).map((it, idx) => (
+                                    <img
+                                      key={idx}
+                                      src={it.image || 'https://via.placeholder.com/60'}
+                                      alt=""
+                                      className="w-8 h-8 rounded-lg object-contain bg-gray-100 dark:bg-slate-800 p-0.5 border border-gray-200 dark:border-slate-700"
+                                      title={`${it.name} (x${it.quantity})`}
+                                    />
+                                  ))}
+                                  {ord.items?.length > 3 && (
+                                    <span className="text-[10px] font-bold text-gray-400 bg-gray-100 dark:bg-slate-800 px-1.5 py-1 rounded-md">
+                                      +{ord.items.length - 3}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="text-[11px] text-gray-400 dark:text-slate-500 block mt-1">
+                                  {ord.items?.reduce((s, it) => s + (it.quantity || 1), 0) || 1} item(s)
+                                </span>
+                              </td>
+
+                              {/* Total & Payment */}
+                              <td className="p-4">
+                                <span className="font-bold text-sm text-gray-900 dark:text-white block">
+                                  ${Number(ord.total || 0).toFixed(2)}
+                                </span>
+                                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                                  {ord.paymentMethod || 'Cash on Delivery'}
+                                </span>
+                              </td>
+
+                              {/* Status Dropdown */}
+                              <td className="p-4">
+                                <select
+                                  value={ord.status || 'confirmed'}
+                                  onChange={(e) => handleUpdateOrderStatus(ord.id, e.target.value)}
+                                  className={`text-[11px] font-bold px-2.5 py-1 rounded-full outline-none cursor-pointer transition-colors ${
+                                    statusColors[ord.status] || 'bg-gray-100 text-gray-700'
+                                  }`}
+                                >
+                                  <option value="confirmed" className="bg-white dark:bg-[#10192d] text-gray-900 dark:text-white">Confirmed</option>
+                                  <option value="processing" className="bg-white dark:bg-[#10192d] text-gray-900 dark:text-white">Processing</option>
+                                  <option value="shipped" className="bg-white dark:bg-[#10192d] text-gray-900 dark:text-white">In Transit</option>
+                                  <option value="out_for_delivery" className="bg-white dark:bg-[#10192d] text-gray-900 dark:text-white">Out for Delivery</option>
+                                  <option value="delivered" className="bg-white dark:bg-[#10192d] text-gray-900 dark:text-white">Delivered</option>
+                                  <option value="cancelled" className="bg-white dark:bg-[#10192d] text-gray-900 dark:text-white">Cancelled</option>
+                                </select>
+                              </td>
+
+                              {/* Actions */}
+                              <td className="p-4 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    onClick={() => setSelectedOrderDetails(ord)}
+                                    className="p-1.5 text-gray-500 hover:text-accent dark:hover:text-accent-light rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                    title="View full order details"
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteOrder(ord.id)}
+                                    className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors cursor-pointer"
+                                    title="Delete order"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </main>
       </div>
+
+      {/* ── MODAL: ORDER DETAILS ── */}
+      {selectedOrderDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#0e172a] rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl border border-gray-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto text-gray-900 dark:text-slate-100 space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-800">
+              <div>
+                <span className="text-[11px] font-bold text-accent uppercase tracking-wider block">Customer Order Details</span>
+                <h3 className="text-xl font-black text-gray-900 dark:text-white">
+                  Order #{selectedOrderDetails.id}
+                </h3>
+              </div>
+              <button onClick={() => setSelectedOrderDetails(null)} className="text-gray-400 hover:text-white cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Customer & Delivery Summary */}
+            <div className="grid sm:grid-cols-2 gap-4 bg-slate-50 dark:bg-[#10192d] p-4 rounded-2xl border border-gray-100 dark:border-slate-800">
+              <div className="space-y-1 text-xs">
+                <span className="font-bold text-gray-400 dark:text-slate-500 uppercase text-[10px] block">Customer Contact</span>
+                <p className="font-bold text-sm text-gray-900 dark:text-white">{selectedOrderDetails.customerName}</p>
+                <p className="text-gray-600 dark:text-slate-300 font-mono">📞 {selectedOrderDetails.customerPhone}</p>
+                {selectedOrderDetails.customerPhone && (
+                  <a
+                    href={`https://wa.me/${selectedOrderDetails.customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hello ${selectedOrderDetails.customerName}, regarding your Order #${selectedOrderDetails.id} on Digital Dokan:`)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline pt-1"
+                  >
+                    <ExternalLink className="w-3 h-3" /> Chat on WhatsApp
+                  </a>
+                )}
+              </div>
+
+              <div className="space-y-1 text-xs">
+                <span className="font-bold text-gray-400 dark:text-slate-500 uppercase text-[10px] block">Delivery Location</span>
+                <p className="font-bold text-gray-900 dark:text-white">
+                  {selectedOrderDetails.customerCity || 'N/A'}{selectedOrderDetails.customerRegion ? `, ${selectedOrderDetails.customerRegion}` : ''}
+                </p>
+                <p className="text-gray-600 dark:text-slate-300 leading-relaxed">
+                  {selectedOrderDetails.streetAddress || selectedOrderDetails.customerAddress || 'Address on record'}
+                </p>
+                <p className="text-[11px] text-gray-400 pt-1">
+                  📅 Ordered: {selectedOrderDetails.orderDate}
+                </p>
+              </div>
+            </div>
+
+            {/* Items Ordered List */}
+            <div className="space-y-3">
+              <h4 className="font-bold text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">
+                Purchased Items ({selectedOrderDetails.items?.length || 0})
+              </h4>
+              <div className="divide-y divide-gray-100 dark:divide-slate-800 border border-gray-100 dark:border-slate-800 rounded-2xl overflow-hidden">
+                {selectedOrderDetails.items?.map((it, idx) => (
+                  <div key={idx} className="p-3.5 flex items-center justify-between gap-4 bg-white dark:bg-[#10192d]">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={it.image || 'https://via.placeholder.com/60'}
+                        alt=""
+                        className="w-12 h-12 rounded-xl object-contain bg-gray-50 dark:bg-slate-800 p-1 border border-gray-100 dark:border-slate-700"
+                      />
+                      <div>
+                        <p className="font-bold text-xs text-gray-900 dark:text-white line-clamp-1">{it.name}</p>
+                        <p className="text-[11px] text-gray-400 dark:text-slate-400">Qty: {it.quantity} × ${Number(it.price || 0).toFixed(2)}</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-sm text-gray-900 dark:text-white">
+                      ${(Number(it.price || 0) * (it.quantity || 1)).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Financial Summary */}
+            <div className="bg-slate-50 dark:bg-[#10192d] p-4 rounded-2xl border border-gray-100 dark:border-slate-800 space-y-2 text-xs">
+              <div className="flex justify-between text-gray-600 dark:text-slate-400">
+                <span>Subtotal:</span>
+                <span className="font-bold">${Number(selectedOrderDetails.subtotal || selectedOrderDetails.total || 0).toFixed(2)}</span>
+              </div>
+              {selectedOrderDetails.discount > 0 && (
+                <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
+                  <span>Discount:</span>
+                  <span className="font-bold">-${Number(selectedOrderDetails.discount).toFixed(2)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-gray-600 dark:text-slate-400">
+                <span>Shipping & Delivery:</span>
+                <span className="font-bold text-emerald-600">Free</span>
+              </div>
+              <div className="flex justify-between text-base font-black text-gray-900 dark:text-white pt-2 border-t border-gray-200 dark:border-slate-700">
+                <span>Total Amount:</span>
+                <span>${Number(selectedOrderDetails.total || 0).toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Quick Status Updater */}
+            <div className="pt-2 space-y-2">
+              <span className="text-[11px] font-bold text-gray-500 uppercase block">Update Delivery Status</span>
+              <div className="flex flex-wrap gap-2">
+                {['confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].map((st) => (
+                  <button
+                    key={st}
+                    onClick={() => handleUpdateOrderStatus(selectedOrderDetails.id, st)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      selectedOrderDetails.status === st
+                        ? 'bg-accent text-white shadow-sm ring-2 ring-accent/30'
+                        : 'bg-slate-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-slate-200'
+                    }`}
+                  >
+                    {st.replace(/_/g, ' ').toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── MODAL: PRODUCT ADD / EDIT ── */}
       {productModalOpen && (

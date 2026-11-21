@@ -21,7 +21,7 @@ function setLocalCart(items) {
 
 export function CartProvider({ children }) {
   const { user } = useAuth();
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(getLocalCart);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
 
@@ -30,22 +30,32 @@ export function CartProvider({ children }) {
     setTimeout(() => setNotification(null), 3000);
   }, []);
 
-  // Fetch cart from API or localStorage
+  // Sync to localStorage whenever cartItems changes
+  useEffect(() => {
+    setLocalCart(cartItems);
+  }, [cartItems]);
+
+  // Fetch cart from API or fallback to localStorage
   const fetchCart = useCallback(async () => {
+    const local = getLocalCart();
+    if (local && local.length > 0) {
+      setCartItems(local);
+    }
+
     if (user) {
       try {
         setLoading(true);
         const res = await API.get('/cart/');
         const items = res.data.items || res.data || [];
-        setCartItems(items);
-      } catch {
-        // Fallback to localStorage if API fails
-        setCartItems(getLocalCart());
+        if (Array.isArray(items) && items.length > 0) {
+          setCartItems(items);
+          setLocalCart(items);
+        }
+      } catch (err) {
+        console.warn('Backend cart unreachable, using local storage:', err);
       } finally {
         setLoading(false);
       }
-    } else {
-      setCartItems(getLocalCart());
     }
   }, [user]);
 
@@ -53,89 +63,95 @@ export function CartProvider({ children }) {
     fetchCart();
   }, [fetchCart]);
 
-  // Sync to localStorage when not logged in
-  useEffect(() => {
-    if (!user) {
-      setLocalCart(cartItems);
-    }
-  }, [cartItems, user]);
-
   const addToCart = useCallback(async (product, quantity = 1) => {
+    if (!product) return;
+
+    // 1. Instantly update local state and localStorage for reliable, zero-latency cart
+    setCartItems(prev => {
+      const pId = product.id;
+      const existing = prev.find(item => item.product?.id === pId || item.id === pId);
+      let updated;
+      if (existing) {
+        updated = prev.map(item =>
+          (item.product?.id === pId || item.id === pId)
+            ? { ...item, quantity: (item.quantity || 1) + quantity }
+            : item
+        );
+      } else {
+        updated = [
+          ...prev,
+          {
+            id: `cart_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+            product: product,
+            quantity: quantity,
+            price: parseFloat(product.sale_price || product.price || 0),
+          }
+        ];
+      }
+      setLocalCart(updated);
+      return updated;
+    });
+
+    showNotification(`🛒 "${product.name}" added to cart!`);
+
+    // 2. If user is authenticated, attempt background sync with server
     if (user) {
       try {
         await API.post('/cart/add/', { product: product.id, product_id: product.id, quantity });
-        await fetchCart();
-        showNotification(`${product.name} added to cart!`);
-      } catch {
-        showNotification('Failed to add item to cart', 'error');
+      } catch (err) {
+        console.warn('Backend cart add failed, retained in local cart:', err);
       }
-    } else {
-      setCartItems(prev => {
-        const existing = prev.find(item => item.product?.id === product.id || item.id === product.id);
-        if (existing) {
-          return prev.map(item =>
-            (item.product?.id === product.id || item.id === product.id)
-              ? { ...item, quantity: (item.quantity || 1) + quantity }
-              : item
-          );
-        }
-        return [...prev, {
-          id: `local_${Date.now()}`,
-          product: product,
-          quantity,
-          price: product.price || product.sale_price
-        }];
-      });
-      showNotification(`${product.name} added to cart!`);
     }
-  }, [user, fetchCart, showNotification]);
+  }, [user, showNotification]);
 
   const removeFromCart = useCallback(async (itemId) => {
+    setCartItems(prev => {
+      const updated = prev.filter(item => item.id !== itemId && item.product?.id !== itemId);
+      setLocalCart(updated);
+      return updated;
+    });
+    showNotification('Item removed from cart');
+
     if (user) {
       try {
-        await API.delete(`/cart/remove/${itemId}/`);
-        await fetchCart();
-        showNotification('Item removed from cart');
-      } catch {
-        showNotification('Failed to remove item', 'error');
+        await API.delete(`/cart/remove/${itemId}/`).catch(() => API.delete(`/cart/${itemId}/delete/`));
+      } catch (err) {
+        console.warn('Backend cart remove failed:', err);
       }
-    } else {
-      setCartItems(prev => prev.filter(item => item.id !== itemId));
-      showNotification('Item removed from cart');
     }
-  }, [user, fetchCart, showNotification]);
+  }, [user, showNotification]);
 
   const updateQuantity = useCallback(async (itemId, quantity) => {
     if (quantity < 1) return;
+
+    setCartItems(prev => {
+      const updated = prev.map(item =>
+        (item.id === itemId || item.product?.id === itemId) ? { ...item, quantity } : item
+      );
+      setLocalCart(updated);
+      return updated;
+    });
+
     if (user) {
       try {
-        await API.patch(`/cart/update/${itemId}/`, { quantity });
-        await fetchCart();
-      } catch {
-        showNotification('Failed to update quantity', 'error');
+        await API.patch(`/cart/update/${itemId}/`, { quantity }).catch(() => API.patch(`/cart/${itemId}/update/`, { quantity }));
+      } catch (err) {
+        console.warn('Backend cart update failed:', err);
       }
-    } else {
-      setCartItems(prev =>
-        prev.map(item =>
-          item.id === itemId ? { ...item, quantity } : item
-        )
-      );
     }
-  }, [user, fetchCart, showNotification]);
+  }, [user]);
 
   const clearCart = useCallback(async () => {
+    setCartItems([]);
+    setLocalCart([]);
+    showNotification('Cart cleared');
+
     if (user) {
       try {
         await API.delete('/cart/clear/');
-        setCartItems([]);
-        showNotification('Cart cleared');
-      } catch {
-        showNotification('Failed to clear cart', 'error');
+      } catch (err) {
+        console.warn('Backend cart clear failed:', err);
       }
-    } else {
-      setCartItems([]);
-      localStorage.removeItem(CART_STORAGE_KEY);
-      showNotification('Cart cleared');
     }
   }, [user, showNotification]);
 
@@ -163,6 +179,12 @@ export function CartProvider({ children }) {
       clearCart,
     }}>
       {children}
+      {notification && (
+        <div className="fixed bottom-6 left-6 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/95 text-white shadow-2xl border border-slate-700/60 backdrop-blur-md pointer-events-none transition-all">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          <span className="text-xs font-bold">{notification.message}</span>
+        </div>
+      )}
     </CartContext.Provider>
   );
 }

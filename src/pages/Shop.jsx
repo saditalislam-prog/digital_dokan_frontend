@@ -16,25 +16,23 @@ import {
   LayoutGrid,
   Sparkles
 } from 'lucide-react';
+import { FaApple, FaMicrosoft } from 'react-icons/fa6';
+import { 
+  SiSamsung, 
+  SiSony, 
+  SiAsus, 
+  SiDell, 
+  SiLenovo, 
+  SiHp, 
+  SiRazer, 
+  SiXiaomi, 
+  SiOneplus, 
+  SiOppo, 
+  SiGoogle 
+} from 'react-icons/si';
 import API from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import { mockProducts, mockCategories, mockBrands } from '../data/mockData';
-
-const BRAND_LOGOS = {
-  apple: '/brands/apple.svg',
-  samsung: '/brands/samsung.svg',
-  google: '/brands/google.svg',
-  sony: '/brands/sony-dark.svg',
-  asus: '/brands/asus-dark.svg',
-  oneplus: '/brands/oneplus.png',
-  xiaomi: '/brands/xiaomi.svg',
-  oppo: '/brands/oppo.svg',
-  microsoft: 'https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg',
-  dell: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg',
-  lenovo: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Lenovo_logo_2015.svg',
-  hp: 'https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg',
-  razer: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Razer_snake_logo.svg/330px-Razer_snake_logo.svg.png'
-};
 
 const getCategoryIcon = (slug) => {
   const s = slug?.toLowerCase() || '';
@@ -49,24 +47,23 @@ const getCategoryIcon = (slug) => {
 
 const getBrandIcon = (brand) => {
   const slug = (brand?.slug || brand?.name || '').toLowerCase();
-  const logoUrl = BRAND_LOGOS[slug] || brand?.logo;
 
-  if (logoUrl) {
-    return (
-      <img
-        src={logoUrl}
-        alt={brand?.name || 'Brand'}
-        className="w-4 h-4 object-contain"
-        loading="lazy"
-        onError={(e) => {
-          e.currentTarget.style.display = 'none';
-        }}
-      />
-    );
-  }
+  if (slug.includes('apple')) return <FaApple className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('samsung')) return <SiSamsung className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('sony')) return <SiSony className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('asus')) return <SiAsus className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('dell')) return <SiDell className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('lenovo')) return <SiLenovo className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('hp')) return <SiHp className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('razer')) return <SiRazer className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('xiaomi')) return <SiXiaomi className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('oneplus')) return <SiOneplus className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('oppo')) return <SiOppo className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('google')) return <SiGoogle className="w-3.5 h-3.5 text-white" />;
+  if (slug.includes('microsoft')) return <FaMicrosoft className="w-3.5 h-3.5 text-white" />;
 
   return (
-    <span className="text-[10px] font-black uppercase text-accent">
+    <span className="text-[11px] font-black uppercase text-white">
       {brand?.name?.charAt(0) || 'B'}
     </span>
   );
@@ -390,7 +387,7 @@ export default function Shop() {
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <span className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors shrink-0 ${
-                        !selectedBrand ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-accent/10 group-hover:text-accent'
+                        !selectedBrand ? 'bg-white/20 text-white' : 'bg-slate-900 text-white group-hover:bg-slate-950'
                       }`}>
                         <Sparkles className="w-3.5 h-3.5" />
                       </span>
@@ -412,7 +409,9 @@ export default function Shop() {
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
                           <span className={`w-7 h-7 rounded-lg p-1 flex items-center justify-center transition-colors shrink-0 ${
-                            isSelected ? 'bg-white shadow-xs' : 'bg-gray-100 group-hover:bg-gray-200'
+                            isSelected
+                              ? 'bg-slate-900 border border-slate-700/80 shadow-xs'
+                              : 'bg-slate-900/90 border border-slate-800 group-hover:bg-slate-950'
                           }`}>
                             {getBrandIcon(b)}
                           </span>
@@ -606,7 +605,7 @@ export default function Shop() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                      !selectedBrand ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
+                      !selectedBrand ? 'bg-white/20 text-white' : 'bg-slate-900 text-white'
                     }`}>
                       <Sparkles className="w-3.5 h-3.5" />
                     </span>
@@ -629,7 +628,7 @@ export default function Shop() {
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <span className={`w-7 h-7 rounded-lg p-1 flex items-center justify-center shrink-0 ${
-                          isSelected ? 'bg-white shadow-xs' : 'bg-gray-100'
+                          isSelected ? 'bg-slate-900 border border-slate-700/80 shadow-xs' : 'bg-slate-900/90 border border-slate-800'
                         }`}>
                           {getBrandIcon(b)}
                         </span>
