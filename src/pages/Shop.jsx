@@ -1,9 +1,76 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Filter, SlidersHorizontal, X, Search, RotateCcw } from 'lucide-react';
+import { 
+  Filter, 
+  SlidersHorizontal, 
+  X, 
+  Search, 
+  RotateCcw,
+  Smartphone,
+  Tablet,
+  Laptop,
+  Watch,
+  Headphones,
+  Gamepad2,
+  Layers,
+  LayoutGrid,
+  Sparkles
+} from 'lucide-react';
 import API from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import { mockProducts, mockCategories, mockBrands } from '../data/mockData';
+
+const BRAND_LOGOS = {
+  apple: '/brands/apple.svg',
+  samsung: '/brands/samsung.svg',
+  google: '/brands/google.svg',
+  sony: '/brands/sony-dark.svg',
+  asus: '/brands/asus-dark.svg',
+  oneplus: '/brands/oneplus.png',
+  xiaomi: '/brands/xiaomi.svg',
+  oppo: '/brands/oppo.svg',
+  microsoft: 'https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg',
+  dell: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg',
+  lenovo: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Lenovo_logo_2015.svg',
+  hp: 'https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg',
+  razer: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/40/Razer_snake_logo.svg/330px-Razer_snake_logo.svg.png'
+};
+
+const getCategoryIcon = (slug) => {
+  const s = slug?.toLowerCase() || '';
+  if (s.includes('phone') || s.includes('mobile')) return <Smartphone className="w-3.5 h-3.5" />;
+  if (s.includes('tablet') || s.includes('ipad')) return <Tablet className="w-3.5 h-3.5" />;
+  if (s.includes('laptop') || s.includes('computer') || s.includes('macbook')) return <Laptop className="w-3.5 h-3.5" />;
+  if (s.includes('watch') || s.includes('wearable')) return <Watch className="w-3.5 h-3.5" />;
+  if (s.includes('accessori') || s.includes('headphone') || s.includes('audio')) return <Headphones className="w-3.5 h-3.5" />;
+  if (s.includes('game') || s.includes('gaming')) return <Gamepad2 className="w-3.5 h-3.5" />;
+  return <Layers className="w-3.5 h-3.5" />;
+};
+
+const getBrandIcon = (brand) => {
+  const slug = (brand?.slug || brand?.name || '').toLowerCase();
+  const logoUrl = BRAND_LOGOS[slug] || brand?.logo;
+
+  if (logoUrl) {
+    return (
+      <img
+        src={logoUrl}
+        alt={brand?.name || 'Brand'}
+        className="w-4 h-4 object-contain"
+        loading="lazy"
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
+      />
+    );
+  }
+
+  return (
+    <span className="text-[10px] font-black uppercase text-accent">
+      {brand?.name?.charAt(0) || 'B'}
+    </span>
+  );
+};
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -238,45 +305,123 @@ export default function Shop() {
 
               {/* Categories Filter */}
               <div>
-                <label className="text-xs font-bold text-gray-700 uppercase tracking-wide block mb-3">
-                  Categories
-                </label>
-                <div className="space-y-1.5">
-                  {categories.map((c) => (
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    Categories
+                  </label>
+                  {selectedCategory && (
                     <button
-                      key={c.id}
-                      onClick={() => handleCategoryChange(c.slug)}
-                      className={`w-full text-left text-sm px-3 py-2 rounded-lg font-medium transition-colors flex items-center justify-between ${
-                        selectedCategory === c.slug
-                          ? 'bg-accent text-white font-semibold'
-                          : 'text-gray-600 hover:bg-gray-50'
-                      }`}
+                      onClick={() => handleCategoryChange('')}
+                      className="text-[11px] text-accent hover:underline font-semibold cursor-pointer"
                     >
-                      <span>{c.name}</span>
+                      Clear
                     </button>
-                  ))}
+                  )}
+                </div>
+                <div className="space-y-1.5">
+                  <button
+                    onClick={() => handleCategoryChange('')}
+                    className={`w-full text-left text-sm px-3 py-2 rounded-xl font-medium transition-all flex items-center justify-between group cursor-pointer ${
+                      !selectedCategory
+                        ? 'bg-accent text-white font-semibold shadow-xs'
+                        : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors shrink-0 ${
+                        !selectedCategory ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-accent/10 group-hover:text-accent'
+                      }`}>
+                        <LayoutGrid className="w-3.5 h-3.5" />
+                      </span>
+                      <span className="truncate">All Categories</span>
+                    </div>
+                    {!selectedCategory && <span className="w-1.5 h-1.5 rounded-full bg-white ml-2 shrink-0" />}
+                  </button>
+                  {categories.map((c) => {
+                    const isSelected = selectedCategory === c.slug;
+                    return (
+                      <button
+                        key={c.id}
+                        onClick={() => handleCategoryChange(c.slug)}
+                        className={`w-full text-left text-sm px-3 py-2 rounded-xl font-medium transition-all flex items-center justify-between group cursor-pointer ${
+                          isSelected
+                            ? 'bg-accent text-white font-semibold shadow-xs'
+                            : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors shrink-0 ${
+                            isSelected ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-accent/10 group-hover:text-accent'
+                          }`}>
+                            {getCategoryIcon(c.slug)}
+                          </span>
+                          <span className="truncate">{c.name}</span>
+                        </div>
+                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white ml-2 shrink-0" />}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Brands Filter */}
               <div>
-                <label className="text-xs font-bold text-gray-700 uppercase tracking-wide block mb-3">
-                  Brands
-                </label>
-                <div className="space-y-1.5">
-                  {brands.map((b) => (
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    Brands
+                  </label>
+                  {selectedBrand && (
                     <button
-                      key={b.id}
-                      onClick={() => handleBrandChange(b.slug)}
-                      className={`w-full text-left text-sm px-3 py-2 rounded-lg font-medium transition-colors flex items-center justify-between ${
-                        selectedBrand === b.slug
-                          ? 'bg-accent text-white font-semibold'
-                          : 'text-gray-600 hover:bg-gray-50'
-                      }`}
+                      onClick={() => handleBrandChange('')}
+                      className="text-[11px] text-accent hover:underline font-semibold cursor-pointer"
                     >
-                      <span>{b.name}</span>
+                      Clear
                     </button>
-                  ))}
+                  )}
+                </div>
+                <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1 scrollbar-thin">
+                  <button
+                    onClick={() => handleBrandChange('')}
+                    className={`w-full text-left text-sm px-3 py-2 rounded-xl font-medium transition-all flex items-center justify-between group cursor-pointer ${
+                      !selectedBrand
+                        ? 'bg-accent text-white font-semibold shadow-xs'
+                        : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors shrink-0 ${
+                        !selectedBrand ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-accent/10 group-hover:text-accent'
+                      }`}>
+                        <Sparkles className="w-3.5 h-3.5" />
+                      </span>
+                      <span className="truncate">All Brands</span>
+                    </div>
+                    {!selectedBrand && <span className="w-1.5 h-1.5 rounded-full bg-white ml-2 shrink-0" />}
+                  </button>
+                  {brands.map((b) => {
+                    const isSelected = selectedBrand === b.slug;
+                    return (
+                      <button
+                        key={b.id}
+                        onClick={() => handleBrandChange(b.slug)}
+                        className={`w-full text-left text-sm px-3 py-2 rounded-xl font-medium transition-all flex items-center justify-between group cursor-pointer ${
+                          isSelected
+                            ? 'bg-accent text-white font-semibold shadow-xs'
+                            : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className={`w-7 h-7 rounded-lg p-1 flex items-center justify-center transition-colors shrink-0 ${
+                            isSelected ? 'bg-white shadow-xs' : 'bg-gray-100 group-hover:bg-gray-200'
+                          }`}>
+                            {getBrandIcon(b)}
+                          </span>
+                          <span className="truncate">{b.name}</span>
+                        </div>
+                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white ml-2 shrink-0" />}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -371,43 +516,129 @@ export default function Shop() {
 
             {/* Mobile Categories */}
             <div>
-              <span className="text-xs font-bold text-gray-700 uppercase block mb-3">Categories</span>
-              <div className="space-y-1">
-                {categories.map((c) => (
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">Categories</span>
+                {selectedCategory && (
                   <button
-                    key={c.id}
                     onClick={() => {
-                      handleCategoryChange(c.slug);
+                      handleCategoryChange('');
                       setMobileFilterOpen(false);
                     }}
-                    className={`w-full text-left text-sm px-3 py-2 rounded-lg ${
-                      selectedCategory === c.slug ? 'bg-accent text-white font-semibold' : 'text-gray-600'
-                    }`}
+                    className="text-[11px] text-accent hover:underline font-semibold"
                   >
-                    {c.name}
+                    Clear
                   </button>
-                ))}
+                )}
+              </div>
+              <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                <button
+                  onClick={() => {
+                    handleCategoryChange('');
+                    setMobileFilterOpen(false);
+                  }}
+                  className={`w-full text-left text-sm px-3 py-2 rounded-xl flex items-center justify-between ${
+                    !selectedCategory ? 'bg-accent text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                      !selectedCategory ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                    </span>
+                    <span className="truncate">All Categories</span>
+                  </div>
+                  {!selectedCategory && <span className="w-1.5 h-1.5 rounded-full bg-white ml-2 shrink-0" />}
+                </button>
+                {categories.map((c) => {
+                  const isSelected = selectedCategory === c.slug;
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => {
+                        handleCategoryChange(c.slug);
+                        setMobileFilterOpen(false);
+                      }}
+                      className={`w-full text-left text-sm px-3 py-2 rounded-xl flex items-center justify-between ${
+                        isSelected ? 'bg-accent text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                          isSelected ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
+                        }`}>
+                          {getCategoryIcon(c.slug)}
+                        </span>
+                        <span className="truncate">{c.name}</span>
+                      </div>
+                      {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white ml-2 shrink-0" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Mobile Brands */}
             <div>
-              <span className="text-xs font-bold text-gray-700 uppercase block mb-3">Brands</span>
-              <div className="space-y-1">
-                {brands.map((b) => (
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">Brands</span>
+                {selectedBrand && (
                   <button
-                    key={b.id}
                     onClick={() => {
-                      handleBrandChange(b.slug);
+                      handleBrandChange('');
                       setMobileFilterOpen(false);
                     }}
-                    className={`w-full text-left text-sm px-3 py-2 rounded-lg ${
-                      selectedBrand === b.slug ? 'bg-accent text-white font-semibold' : 'text-gray-600'
-                    }`}
+                    className="text-[11px] text-accent hover:underline font-semibold"
                   >
-                    {b.name}
+                    Clear
                   </button>
-                ))}
+                )}
+              </div>
+              <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                <button
+                  onClick={() => {
+                    handleBrandChange('');
+                    setMobileFilterOpen(false);
+                  }}
+                  className={`w-full text-left text-sm px-3 py-2 rounded-xl flex items-center justify-between ${
+                    !selectedBrand ? 'bg-accent text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                      !selectedBrand ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      <Sparkles className="w-3.5 h-3.5" />
+                    </span>
+                    <span className="truncate">All Brands</span>
+                  </div>
+                  {!selectedBrand && <span className="w-1.5 h-1.5 rounded-full bg-white ml-2 shrink-0" />}
+                </button>
+                {brands.map((b) => {
+                  const isSelected = selectedBrand === b.slug;
+                  return (
+                    <button
+                      key={b.id}
+                      onClick={() => {
+                        handleBrandChange(b.slug);
+                        setMobileFilterOpen(false);
+                      }}
+                      className={`w-full text-left text-sm px-3 py-2 rounded-xl flex items-center justify-between ${
+                        isSelected ? 'bg-accent text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className={`w-7 h-7 rounded-lg p-1 flex items-center justify-center shrink-0 ${
+                          isSelected ? 'bg-white shadow-xs' : 'bg-gray-100'
+                        }`}>
+                          {getBrandIcon(b)}
+                        </span>
+                        <span className="truncate">{b.name}</span>
+                      </div>
+                      {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white ml-2 shrink-0" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
