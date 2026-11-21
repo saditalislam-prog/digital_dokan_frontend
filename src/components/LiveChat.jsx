@@ -76,7 +76,15 @@ export default function LiveChat() {
 
     // Save inquiry to localStorage so store admin can review in Admin Dashboard
     try {
-      const existingInquiries = JSON.parse(localStorage.getItem('digital_dokan_customer_inquiries') || '[]');
+      const stored = localStorage.getItem('digital_dokan_customer_inquiries');
+      let existingInquiries = [];
+      try {
+        existingInquiries = stored ? JSON.parse(stored) : [];
+        if (!Array.isArray(existingInquiries)) existingInquiries = [];
+      } catch {
+        existingInquiries = [];
+      }
+
       const newInquiry = {
         id: `inq_${Date.now()}`,
         user: user ? (user.username || user.email || 'Registered Customer') : 'Website Visitor #' + Math.floor(1000 + Math.random() * 9000),
@@ -86,7 +94,13 @@ export default function LiveChat() {
         status: 'New',
         phone: user?.phone || '+880 1700-000000'
       };
-      localStorage.setItem('digital_dokan_customer_inquiries', JSON.stringify([newInquiry, ...existingInquiries.slice(0, 49)]));
+
+      const updated = [newInquiry, ...existingInquiries.slice(0, 49)];
+      localStorage.setItem('digital_dokan_customer_inquiries', JSON.stringify(updated));
+
+      // Dispatch custom events for real-time reactivity in current tab and across tabs
+      window.dispatchEvent(new CustomEvent('digital_dokan_new_inquiry', { detail: newInquiry }));
+      window.dispatchEvent(new Event('storage'));
     } catch (e) {
       console.warn('Could not save customer inquiry:', e);
     }
